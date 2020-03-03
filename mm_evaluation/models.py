@@ -62,7 +62,7 @@ class Macroprocess(models.Model):
     """Name contains the macroprocess' high level name."""
     name = models.CharField(max_length = 50)
 
-    class Meto:
+    class Meta:
         db_table = 'macroprocess'
 
 
