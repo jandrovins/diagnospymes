@@ -70,7 +70,7 @@ class Process(models.Model):
     """This is the database table where general information related to each process is stored. 'description' makes reference to the process sspecific description. Weight is needed when computing the macroprocess score. 'macroprocess_id' is the macroprocess to which the process belongs."""
     macroprocess_id = models.ForeignKey(Macroprocess, on_delete=models.CASCADE)
     description = models.CharField(max_length=500)
-    guiding_question = models.CharField(max_length=400)
+    guiding_question = models.CharField(max_length=400,default=400)
     weight = models.IntegerField()
 
 
