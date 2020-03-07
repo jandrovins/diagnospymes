@@ -4,5 +4,5 @@ from . import views
 
 app_name = 'mm_evaluation'
 urlpatterns = [
-    path('', views.autoevaluation, name='autoevaluation'),
+        path('', views.Autoevaluation.as_view()),
 ]
