@@ -96,7 +96,7 @@ class SpecificPractice(models.Model):
     """Recommendation is a text which tells you how to achieve the level of this specific practice."""
     recommendation = models.CharField(max_length = 500)
     """Process_id is a foreign key, which relates this specific practice to its corresponding process."""
-    process_id = models.IntegerField()
+    process_id = models.ForeignKey(Process, on_delete=models.CASCADE)
     """Score is the level of process this specific practive is related to, it is a number between 0 and 5."""
     score = models.IntegerField()
 
