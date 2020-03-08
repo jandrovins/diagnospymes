@@ -1,0 +1,13 @@
+<h1>Autoevaluación</h1>
+<ol>
+    {% for macroprocess in macroprocesses_list %}
+    <li>
+        <lh>{{ macroprocess.name }}</lh>
+        <ul>
+            {% for process in macroprocess.process_set.all %}
+            <li>{{ process.description }}</li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
+</ol>

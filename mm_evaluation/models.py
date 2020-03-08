@@ -57,6 +57,8 @@ class Autoevaluation(models.Model):
 """This table contains the information regardin the different macroprocesses relevant to the self-evaluation process, which are 10 and describe the large areas of concern when it comes to logistical performance."""        
 class Macroprocess(models.Model):
 
+    """Description is a text field which contains a brief explanations of a particular macroprocess."""
+    description = models.CharField(max_length = 500, default="")
     """Name contains the macroprocess' high level name."""
     name = models.CharField(max_length = 50)
 
