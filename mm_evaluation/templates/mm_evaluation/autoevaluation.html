@@ -1,13 +1,18 @@
+<head>
+  {% block title %}<title>Autoevaluación</title>{% endblock %}
+</head>
+<body style="background-color:honeydew;">
 <h1>Autoevaluación</h1>
-<ol>
+  <ol>
     {% for macroprocess in macroprocesses_list %}
-    <li>
-        <lh>{{ macroprocess.name }}</lh>
-        <ul>
-            {% for process in macroprocess.process_set.all %}
-            <li>{{ process.description }}</li>
-            {% endfor %}
-        </ul>
-    </li>
-    {% endfor %}
+  <li>
+    <lh>{{ macroprocess.name }}</lh>
+    <ul>
+      {% for process in macroprocess.process_set.all %}
+  <li>{{ process.description }}</li>
+      {% endfor %}
+    </ul>
+  </li>
+  {% endfor %}
 </ol>
+</body>
