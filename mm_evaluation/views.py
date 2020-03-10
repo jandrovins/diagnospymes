@@ -1,13 +1,13 @@
 from django.db import IntegrityError
 from django.http import HttpResponse,HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import ListView
+from django.views.generic import ListView, View, DetailView
 from django.views.generic.base import TemplateView
 
 from .models import Process, Macroprocess, Autoevaluation, Answer, PYME
-from .forms import PunctuateProcessForm
 
 class AutoevaluationView(ListView):
     model = Macroprocess
@@ -69,3 +69,24 @@ class AutoevaluationView(ListView):
 
 class ProcessAlreadyAnswerView(TemplateView):
     template_name = 'mm_evaluation/process_already_answer.html'
+
+
+class PreviousResults(ListView):
+    template_name = 'mm_evaluation/previousresults.html'
+    context_object_name = 'all_previous_results'
+
+    def get_queryset(self):
+        return Autoevaluation.objects.filter(pyme_id_id=1,final_score__isnull=False).order_by('last_time_edition')
+
+      
+class ResultDetail(DetailView):
+    model = Autoevaluation
+    template_name = 'mm_evaluation/resultdetail.html'
+    
+    
+class IndexView(View):
+    template_name = 'mm_evaluation/index.html'
+    context_object_name = 'general_list'
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(render_to_string(self.template_name))
