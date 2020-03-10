@@ -26,7 +26,7 @@ class AutoevaluationView(ListView):
             if not self.is_autoevaluation_filled(autoevaluation):
                 return autoevaluation
 
-        return Autoevaluation(pyme_id=1,
+        return Autoevaluation(pyme_id=get_object_or_404(PYME, pk=1),
                 start_time=timezone.now(),
                 last_time_edition=timezone.now()
                 )
@@ -57,6 +57,7 @@ class AutoevaluationView(ListView):
         try:
             answer = Answer(autoevaluation_id=autoevaluation, process_id=process, score=request.POST['score'])
             autoevaluation.last_time_edition = timezone.now()
+            autoevaluation.save()
             answer.save()
         except (IntegrityError):
             return HttpResponseRedirect(reverse('mm_evaluation:process_already_answer'))
@@ -71,6 +72,53 @@ class ProcessAlreadyAnswerView(TemplateView):
     template_name = 'mm_evaluation/process_already_answer.html'
 
 
+
+class IndexView(View):
+    template_name = 'mm_evaluation/index.html'
+    context_object_name = 'general_list'
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(render_to_string(self.template_name))
+
+class Mission(View):
+    template_name = 'mm_evaluation/mission.html'
+    context_object_name = 'general_list'
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(render_to_string(self.template_name))
+
+class AboutUs(View):
+    template_name = 'mm_evaluation/index.html'
+    context_object_name = 'general_list'
+    
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(render_to_string(self.template_name))
+
+class Vision(View):
+    template_name = 'mm_evaluation/vision.html'
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(render_to_string(self.template_name))
+
+class Metodology(View):
+    template_name = 'mm_evaluation/metodology.html'
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(render_to_string(self.template_name))
+    
+class Requirements(View):
+    template_name = 'mm_evaluation/requirements.html'
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(render_to_string(self.template_name))
+
+class Instructions(View):
+    template_name = 'mm_evaluation/instructions.html'
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(render_to_string(self.template_name))
+
+    
 class PreviousResults(ListView):
     template_name = 'mm_evaluation/previousresults.html'
     context_object_name = 'all_previous_results'
@@ -83,10 +131,9 @@ class ResultDetail(DetailView):
     model = Autoevaluation
     template_name = 'mm_evaluation/resultdetail.html'
     
-    
-class IndexView(View):
-    template_name = 'mm_evaluation/index.html'
-    context_object_name = 'general_list'
+
+class Resources(View):
+    template_name = 'mm_evaluation/resources.html'
 
     def get(self, request, *args, **kwargs):
         return HttpResponse(render_to_string(self.template_name))
