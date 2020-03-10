@@ -1,10 +1,10 @@
-from django.shortcuts import render
+from django.db import IntegrityError
 from django.http import HttpResponse,HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
+from django.utils import timezone
 from django.views.generic import ListView
 from django.views.generic.base import TemplateView
-from django.shortcuts import get_object_or_404
-from django.urls import reverse
-from django.db import IntegrityError
 
 from .models import Process, Macroprocess, Autoevaluation, Answer, PYME
 from .forms import PunctuateProcessForm
@@ -25,6 +25,12 @@ class AutoevaluationView(ListView):
         for autoevaluation in autoevaluations_list:
             if not self.is_autoevaluation_filled(autoevaluation):
                 return autoevaluation
+
+        return Autoevaluation(pyme_id=1,
+                start_time=timezone.now(),
+                last_time_edition=timezone.now()
+                )
+
 
     def get(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
@@ -50,6 +56,7 @@ class AutoevaluationView(ListView):
         process = get_object_or_404(Process, pk=pk)
         try:
             answer = Answer(autoevaluation_id=autoevaluation, process_id=process, score=request.POST['score'])
+            autoevaluation.last_time_edition = timezone.now()
             answer.save()
         except (IntegrityError):
             return HttpResponseRedirect(reverse('mm_evaluation:process_already_answer'))
