@@ -1,0 +1,8 @@
+{% if all_previous_results %}
+<ul>
+  {% for autoevaluation in all_previous_results %}
+    <a href="/results/">
+      <li>{{evaluation.last_time_update}}</li>
+      {% endfor %}
+</ul>
+

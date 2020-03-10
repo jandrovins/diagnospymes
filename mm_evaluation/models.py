@@ -1,3 +1,4 @@
+
 from django.db import models
 
 class Sector(models.Model):
@@ -37,17 +38,17 @@ class Autoevaluation(models.Model):
     pyme_id = models.ForeignKey(PYME, on_delete=models.CASCADE)
     start_time = models.DateField()
     last_time_edition = models.DateField()
-    final_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_1_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_2_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_3_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_4_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_5_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_6_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_7_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_8_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_9_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_10_score = models.DecimalField(max_digits=3, decimal_places=2)
+    final_score = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
+    macroprocess_1_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_2_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_3_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_4_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_5_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_6_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_7_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_8_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_9_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_10_score = models.DecimalField(max_digits=3, decimal_places=2,null=True, blank=True)
 
 
     class Meta:
