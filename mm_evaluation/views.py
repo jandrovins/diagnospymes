@@ -22,3 +22,47 @@ class IndexView(View):
 
     def get(self, request, *args, **kwargs):
         return HttpResponse(render_to_string(self.template_name))
+
+class Mission(View):
+    template_name = 'mm_evaluation/mission.html'
+    context_object_name = 'general_list'
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(render_to_string(self.template_name))
+
+class AboutUs(View):
+    template_name = 'mm_evaluation/index.html'
+    context_object_name = 'general_list'
+    
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(render_to_string(self.template_name))
+
+class Vision(View):
+    template_name = 'mm_evaluation/vision.html'
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(render_to_string(self.template_name))
+
+class Metodology(View):
+    template_name = 'mm_evaluation/metodology.html'
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(render_to_string(self.template_name))
+    
+class Requirements(View):
+    template_name = 'mm_evaluation/requirements.html'
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(render_to_string(self.template_name))
+
+class Instructions(View):
+    template_name = 'mm_evaluation/instructions.html'
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(render_to_string(self.template_name))
+
+class Resources(View):
+    template_name = 'mm_evaluation/resources.html'
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(render_to_string(self.template_name))
