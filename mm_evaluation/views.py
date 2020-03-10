@@ -1,29 +1,32 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseRedirect
 from django.views.generic import ListView
+from django.views.generic.base import TemplateView
 from django.shortcuts import get_object_or_404
-from .models import Process, Macroprocess, Autoevaluation
+from django.urls import reverse
+from django.db import IntegrityError
 
-class Autoevaluation(ListView):
+from .models import Process, Macroprocess, Autoevaluation, Answer
+from .forms import PunctuateProcessForm
+
+class AutoevaluationView(ListView):
     model = Macroprocess
     template_name = 'mm_evaluation/autoevaluation.html'
     context_object_name = 'macroprocesses_list'
 
-def view_results(request, autoevaluation_id):
-    autoevaluation = get_object_or_404(Autoevaluation, pk=autoevaluation_id)
-:   try:
-        selected_choice = question.choice_set.get(pk=request.POST['choice'])
-    except (KeyError, Choice.DoesNotExist):
-        # Redisplay the question voting form.
-        return render(request, 'polls/detail.html', {
-            'question': question,
-            'error_message': "You didn't select a choice.",
-        })
+class ProcessAlreadyAnswerView(TemplateView):
+    template_name = 'mm_evaluation/process_already_answer.html'
+
+def save_answer(request, pk):
+    autoevaluation = get_object_or_404(Autoevaluation, pk=1)
+    process = get_object_or_404(Process, pk=pk)
+    try:
+        answer = Answer(autoevaluation_id=autoevaluation, process_id=process, score=request.POST['score'])
+        answer.save()
+    except (IntegrityError):
+        return HttpResponseRedirect(reverse('mm_evaluation:process_already_answer'))
     else:
-        selected_choice.votes += 1
-        selected_choice.save()
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
-        return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
-
+        return HttpResponseRedirect(reverse('mm_evaluation:autoevaluation'))

@@ -1,5 +1,14 @@
 from django.db import models
 
+VALID_SCORES = [
+        (0, 'zero'),
+        (1, 'one'),
+        (2, 'two'),
+        (3, 'three'),
+        (4, 'four'),
+        (5, 'five'),
+        ]
+
 class Sector(models.Model):
     """The class Sector is for making a sectors table in MariaDB, based in economic secotrs in Colombia, the fields are: name is the sectors name in wich the company is involve, description is the description of the sector"""
     name = models.CharField(max_length=20)
@@ -37,17 +46,17 @@ class Autoevaluation(models.Model):
     pyme_id = models.ForeignKey(PYME, on_delete=models.CASCADE)
     start_time = models.DateField()
     last_time_edition = models.DateField()
-    final_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_1_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_2_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_3_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_4_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_5_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_6_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_7_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_8_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_9_score = models.DecimalField(max_digits=3, decimal_places=2)
-    macroprocess_10_score = models.DecimalField(max_digits=3, decimal_places=2)
+    final_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_1_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_2_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_3_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_4_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_5_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_6_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_7_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_8_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_9_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    macroprocess_10_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
 
 
     class Meta:
@@ -83,11 +92,14 @@ class Answer(models.Model):
     """When a process is evaluated in an autoevaluation an entry in the 'answer' table will be created."""
     process_id = models.ForeignKey(Process, on_delete=models.CASCADE)
     autoevaluation_id = models.ForeignKey(Autoevaluation, on_delete=models.CASCADE)
-    score = models.IntegerField()
+    score = models.IntegerField(choices=VALID_SCORES)
 
 
     class Meta:
         db_table = 'answer'
+        constraints = [
+                models.UniqueConstraint(fields=['autoevaluation_id', 'process_id'], name='unique_answer'),
+                ]
 
 
 """This table contains the information regarding specific practices, which are directly related to each level of each process and are used to describe the behaviour of a certain level in each process."""
@@ -95,7 +107,7 @@ class SpecificPractice(models.Model):
     """Process_id is a foreign key, which relates this specific practice to its corresponding process."""
     process_id = models.ForeignKey(Process,on_delete=models.CASCADE)
     """Score is the level of process this specific practive is related to, it is a number between 0 and 5."""
-    score = models.IntegerField()
+    score = models.IntegerField(choices=VALID_SCORES)
     """Description is a text field which contains a brief explanations of a particular specific practice."""
     description = models.CharField(max_length = 500)
     """Recommendation is a text which tells you how to achieve the level of this specific practice."""
@@ -110,7 +122,7 @@ class GeneralPractice(models.Model):
     """name refers to the name of the respective generl practice level"""
     name = models.CharField(max_length=40, default=' ')
     """Score is the level of overall logistic performance this specific practive is related to, it is a number between 0 and 5."""
-    score = models.IntegerField()
+    score = models.IntegerField(choices=VALID_SCORES)
     """Description is a text field which contains a brief explanations of a particular general practice."""
     description = models.CharField(max_length = 500)
     """Recommendation is a text which tells you how to achieve the level of this general practice."""
