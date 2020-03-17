@@ -1,9 +1,9 @@
 <h1>Resultados</h1>
 {% if all_previous_results %}
 <ul>
-  {% for autoevaluation in all_previous_results %}
-  <li> <a href="{{ autoevaluation.id }}">{{ autoevaluation.last_time_edition }}</a></li>
-  {% endfor %}
-{% endif %}
+    {% for autoevaluation in all_previous_results %}
+    <li> <a href="{{ autoevaluation.id }}">{{ autoevaluation.last_time_edition }}</a></li>
+    {% endfor %}
+    {% endif %}
 </ul>
 

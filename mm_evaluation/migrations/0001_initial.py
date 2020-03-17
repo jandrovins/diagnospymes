@@ -9,168 +9,168 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-    ]
+            ]
 
     operations = [
-        migrations.CreateModel(
-            name='GeneralPractice',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(default=' ', max_length=40)),
-                ('score', models.IntegerField()),
-                ('description', models.CharField(max_length=500)),
-                ('recommendation', models.CharField(max_length=500)),
-            ],
-            options={
-                'db_table': 'general_practice',
-            },
-        ),
-        migrations.CreateModel(
-            name='Macroprocess',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('description', models.CharField(default='', max_length=500)),
-                ('name', models.CharField(max_length=50)),
-            ],
-            options={
-                'db_table': 'macroprocess',
-            },
-        ),
-        migrations.CreateModel(
-            name='Process',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(default='', max_length=50)),
-                ('description', models.CharField(max_length=500)),
-                ('guiding_question', models.CharField(default=' ', max_length=400)),
-                ('weight', models.FloatField()),
-                ('macroprocess_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mm_evaluation.Macroprocess')),
-            ],
-            options={
-                'db_table': 'process',
-            },
-        ),
-        migrations.CreateModel(
-            name='Sector',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=20)),
-                ('description', models.CharField(max_length=400)),
-            ],
-            options={
-                'db_table': 'sector',
-            },
-        ),
-        migrations.CreateModel(
-            name='SpecificPractice',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('score', models.IntegerField()),
-                ('description', models.CharField(max_length=500)),
-                ('recommendation', models.CharField(max_length=500)),
-                ('process_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mm_evaluation.Process')),
-            ],
-            options={
-                'db_table': 'specific_practice',
-            },
-        ),
-        migrations.CreateModel(
-            name='PYME',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('email_address', models.CharField(max_length=100)),
-                ('pyme_name', models.CharField(max_length=100)),
-                ('password', models.CharField(max_length=100)),
-                ('nit', models.CharField(max_length=30)),
-                ('phone_number', models.CharField(max_length=10)),
-                ('address', models.CharField(max_length=50)),
-                ('contact_name', models.CharField(max_length=50)),
-                ('contact_number', models.CharField(max_length=10)),
-                ('contact_sex', models.CharField(max_length=10)),
-                ('contact_birth_day', models.DateTimeField()),
-                ('contact_id_type', models.CharField(max_length=30)),
-                ('contact_id_number', models.CharField(max_length=15)),
-                ('contact_education_level', models.CharField(max_length=40)),
-                ('terms_conditions_acceptance', models.BooleanField()),
-                ('contact_time_on_charge', models.IntegerField()),
-                ('sector_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mm_evaluation.Sector')),
-            ],
-            options={
-                'db_table': 'pyme',
-            },
-        ),
-        migrations.CreateModel(
-            name='FinancesInformation',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('employees_number', models.IntegerField()),
-                ('anual_income', models.BigIntegerField()),
-                ('assets', models.BigIntegerField()),
-                ('liabilities', models.IntegerField()),
-                ('monthly_production', models.BigIntegerField()),
-                ('productive_configuration', models.CharField(max_length=300)),
-                ('inventory_politics', models.CharField(max_length=100)),
-                ('main_product', models.CharField(max_length=30)),
-                ('main_competidor', models.CharField(max_length=30)),
-                ('patrimony', models.BigIntegerField()),
-                ('sales_income', models.BigIntegerField()),
-                ('gross_profits', models.BigIntegerField()),
-                ('net_profits', models.BigIntegerField()),
-                ('fixed_costs_expences', models.BigIntegerField()),
-                ('variable_costs_expences', models.BigIntegerField()),
-                ('ebitda', models.IntegerField()),
-                ('pyme_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mm_evaluation.PYME')),
-            ],
-            options={
-                'db_table': 'finances_information',
-            },
-        ),
-        migrations.CreateModel(
-            name='Autoevaluation',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('start_time', models.DateField()),
-                ('last_time_edition', models.DateField()),
-                ('final_score', models.DecimalField(decimal_places=2, max_digits=3)),
-                ('macroprocess_1_score', models.DecimalField(decimal_places=2, max_digits=3)),
-                ('macroprocess_2_score', models.DecimalField(decimal_places=2, max_digits=3)),
-                ('macroprocess_3_score', models.DecimalField(decimal_places=2, max_digits=3)),
-                ('macroprocess_4_score', models.DecimalField(decimal_places=2, max_digits=3)),
-                ('macroprocess_5_score', models.DecimalField(decimal_places=2, max_digits=3)),
-                ('macroprocess_6_score', models.DecimalField(decimal_places=2, max_digits=3)),
-                ('macroprocess_7_score', models.DecimalField(decimal_places=2, max_digits=3)),
-                ('macroprocess_8_score', models.DecimalField(decimal_places=2, max_digits=3)),
-                ('macroprocess_9_score', models.DecimalField(decimal_places=2, max_digits=3)),
-                ('macroprocess_10_score', models.DecimalField(decimal_places=2, max_digits=3)),
-                ('pyme_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mm_evaluation.PYME')),
-            ],
-            options={
-                'db_table': 'autoevaluation',
-            },
-        ),
-        migrations.CreateModel(
-            name='Archive',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file_object', models.FileField(upload_to='')),
-                ('file_type', models.CharField(max_length=10)),
-                ('file_name', models.CharField(max_length=40)),
-                ('pyme_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mm_evaluation.PYME')),
-            ],
-            options={
-                'db_table': 'archive',
-            },
-        ),
-        migrations.CreateModel(
-            name='Answer',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('score', models.IntegerField()),
-                ('autoevaluation_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mm_evaluation.Autoevaluation')),
-                ('process_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mm_evaluation.Process')),
-            ],
-            options={
-                'db_table': 'answer',
-            },
-        ),
-    ]
+            migrations.CreateModel(
+                name='GeneralPractice',
+                fields=[
+                    ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                    ('name', models.CharField(default=' ', max_length=40)),
+                    ('score', models.IntegerField()),
+                    ('description', models.CharField(max_length=500)),
+                    ('recommendation', models.CharField(max_length=500)),
+                    ],
+                options={
+                    'db_table': 'general_practice',
+                    },
+                ),
+            migrations.CreateModel(
+                name='Macroprocess',
+                fields=[
+                    ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                    ('description', models.CharField(default='', max_length=500)),
+                    ('name', models.CharField(max_length=50)),
+                    ],
+                options={
+                    'db_table': 'macroprocess',
+                    },
+                ),
+            migrations.CreateModel(
+                name='Process',
+                fields=[
+                    ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                    ('name', models.CharField(default='', max_length=50)),
+                    ('description', models.CharField(max_length=500)),
+                    ('guiding_question', models.CharField(default=' ', max_length=400)),
+                    ('weight', models.FloatField()),
+                    ('macroprocess_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mm_evaluation.Macroprocess')),
+                    ],
+                options={
+                    'db_table': 'process',
+                    },
+                ),
+            migrations.CreateModel(
+                name='Sector',
+                fields=[
+                    ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                    ('name', models.CharField(max_length=20)),
+                    ('description', models.CharField(max_length=400)),
+                    ],
+                options={
+                    'db_table': 'sector',
+                    },
+                ),
+            migrations.CreateModel(
+                    name='SpecificPractice',
+                    fields=[
+                        ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                        ('score', models.IntegerField()),
+                        ('description', models.CharField(max_length=500)),
+                        ('recommendation', models.CharField(max_length=500)),
+                        ('process_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mm_evaluation.Process')),
+                        ],
+                    options={
+                        'db_table': 'specific_practice',
+                        },
+                    ),
+            migrations.CreateModel(
+                    name='PYME',
+                    fields=[
+                        ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                        ('email_address', models.CharField(max_length=100)),
+                        ('pyme_name', models.CharField(max_length=100)),
+                        ('password', models.CharField(max_length=100)),
+                        ('nit', models.CharField(max_length=30)),
+                        ('phone_number', models.CharField(max_length=10)),
+                        ('address', models.CharField(max_length=50)),
+                        ('contact_name', models.CharField(max_length=50)),
+                        ('contact_number', models.CharField(max_length=10)),
+                        ('contact_sex', models.CharField(max_length=10)),
+                        ('contact_birth_day', models.DateTimeField()),
+                        ('contact_id_type', models.CharField(max_length=30)),
+                        ('contact_id_number', models.CharField(max_length=15)),
+                        ('contact_education_level', models.CharField(max_length=40)),
+                        ('terms_conditions_acceptance', models.BooleanField()),
+                        ('contact_time_on_charge', models.IntegerField()),
+                        ('sector_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mm_evaluation.Sector')),
+                        ],
+                    options={
+                        'db_table': 'pyme',
+                        },
+                    ),
+            migrations.CreateModel(
+                    name='FinancesInformation',
+                    fields=[
+                        ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                        ('employees_number', models.IntegerField()),
+                        ('anual_income', models.BigIntegerField()),
+                        ('assets', models.BigIntegerField()),
+                        ('liabilities', models.IntegerField()),
+                        ('monthly_production', models.BigIntegerField()),
+                        ('productive_configuration', models.CharField(max_length=300)),
+                        ('inventory_politics', models.CharField(max_length=100)),
+                        ('main_product', models.CharField(max_length=30)),
+                        ('main_competidor', models.CharField(max_length=30)),
+                        ('patrimony', models.BigIntegerField()),
+                        ('sales_income', models.BigIntegerField()),
+                        ('gross_profits', models.BigIntegerField()),
+                        ('net_profits', models.BigIntegerField()),
+                        ('fixed_costs_expences', models.BigIntegerField()),
+                        ('variable_costs_expences', models.BigIntegerField()),
+                        ('ebitda', models.IntegerField()),
+                        ('pyme_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mm_evaluation.PYME')),
+                        ],
+                    options={
+                        'db_table': 'finances_information',
+                        },
+                    ),
+            migrations.CreateModel(
+                    name='Autoevaluation',
+                    fields=[
+                        ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                        ('start_time', models.DateField()),
+                        ('last_time_edition', models.DateField()),
+                        ('final_score', models.DecimalField(decimal_places=2, max_digits=3)),
+                        ('macroprocess_1_score', models.DecimalField(decimal_places=2, max_digits=3)),
+                        ('macroprocess_2_score', models.DecimalField(decimal_places=2, max_digits=3)),
+                        ('macroprocess_3_score', models.DecimalField(decimal_places=2, max_digits=3)),
+                        ('macroprocess_4_score', models.DecimalField(decimal_places=2, max_digits=3)),
+                        ('macroprocess_5_score', models.DecimalField(decimal_places=2, max_digits=3)),
+                        ('macroprocess_6_score', models.DecimalField(decimal_places=2, max_digits=3)),
+                        ('macroprocess_7_score', models.DecimalField(decimal_places=2, max_digits=3)),
+                        ('macroprocess_8_score', models.DecimalField(decimal_places=2, max_digits=3)),
+                        ('macroprocess_9_score', models.DecimalField(decimal_places=2, max_digits=3)),
+                        ('macroprocess_10_score', models.DecimalField(decimal_places=2, max_digits=3)),
+                        ('pyme_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mm_evaluation.PYME')),
+                        ],
+                    options={
+                        'db_table': 'autoevaluation',
+                        },
+                    ),
+            migrations.CreateModel(
+                    name='Archive',
+                    fields=[
+                        ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                        ('file_object', models.FileField(upload_to='')),
+                        ('file_type', models.CharField(max_length=10)),
+                        ('file_name', models.CharField(max_length=40)),
+                        ('pyme_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mm_evaluation.PYME')),
+                        ],
+                    options={
+                        'db_table': 'archive',
+                        },
+                    ),
+            migrations.CreateModel(
+                    name='Answer',
+                    fields=[
+                        ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                        ('score', models.IntegerField()),
+                        ('autoevaluation_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mm_evaluation.Autoevaluation')),
+                        ('process_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='mm_evaluation.Process')),
+                        ],
+                    options={
+                        'db_table': 'answer',
+                        },
+                    ),
+            ]
