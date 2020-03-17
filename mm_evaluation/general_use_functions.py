@@ -6,6 +6,7 @@ from .models import Autoevaluation, PYME, Answer, Process
 def is_autoevaluation_filled(a):
     # If there are as many answers as there are processes, 'a' is completed.
     if len(Answer.objects.filter(autoevaluation_id=a.id)) == len(Process.objects.all()):
+        print ('CREAR NUEVA AUTOEVALUACIÓN')
         return True
     return False
 
