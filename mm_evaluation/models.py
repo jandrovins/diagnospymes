@@ -1,5 +1,6 @@
-
 from django.db import models
+
+
 
 VALID_SCORES = [
         (0, 'zero'),
@@ -47,17 +48,18 @@ class Autoevaluation(models.Model):
     pyme_id = models.ForeignKey(PYME, on_delete=models.CASCADE)
     start_time = models.DateField()
     last_time_edition = models.DateField()
-    final_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
-    macroprocess_1_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
-    macroprocess_2_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
-    macroprocess_3_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
-    macroprocess_4_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
-    macroprocess_5_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
-    macroprocess_6_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
-    macroprocess_7_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
-    macroprocess_8_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
-    macroprocess_9_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
-    macroprocess_10_score = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
+    final_score = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    macroprocess_1_score = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    macroprocess_2_score = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    macroprocess_3_score = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    macroprocess_4_score = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    macroprocess_5_score = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    macroprocess_6_score = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    macroprocess_7_score = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    macroprocess_8_score = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    macroprocess_9_score = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    macroprocess_10_score = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+
 
     class Meta:
         db_table = 'autoevaluation'
@@ -166,3 +168,45 @@ class FinancesInformation(models.Model):
     class Meta:
         db_table = 'finances_information'
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from .general_use_functions import *
+""" Function to update scores of the respective macroprocess in Autoevaluation instance each time an answer is created. When users is implemented this should be used to get the actual current Autoevaluation instance. Macroprocesses IDs should range from 1 to 10"""
+@receiver(post_save, sender=Answer)
+def update_mps_on_autevaluation(sender, **kwargs):
+    autoevaluation = get_autoevaluation(1)
+    answer_list = Answer.objects.filter(autoevaluation_id=autoevaluation.id)
+
+    # Actual scores of the MPs
+    mps_scores = [0 for i in range(11)]
+    # Percentages of the MPs that are alreay answered
+    mps_percentages = [0 for i in range(11)]
+
+    for answer in answer_list:
+        answers_process = Process.objects.get(pk=answer.process_id.id)
+        mps_scores[answers_process.macroprocess_id.id] += answer.score * answers_process.weight
+        mps_percentages[answers_process.macroprocess_id.id] += answers_process.weight
+
+    if mps_percentages[1] != 0:
+        autoevaluation.macroprocess_1_score = mps_scores[1] * (1 / mps_percentages[1])
+    if mps_percentages[2] != 0:
+      autoevaluation.macroprocess_2_score = mps_scores[2] * (1 / mps_percentages[2])
+    if mps_percentages[3] != 0:
+      autoevaluation.macroprocess_3_score = mps_scores[3] * (1 / mps_percentages[3])
+    if mps_percentages[4] != 0:
+      autoevaluation.macroprocess_4_score = mps_scores[4] * (1 / mps_percentages[4])
+    if mps_percentages[5] != 0:
+      autoevaluation.macroprocess_5_score = mps_scores[5] * (1 / mps_percentages[5])
+    if mps_percentages[6] != 0:
+      autoevaluation.macroprocess_6_score = mps_scores[6] * (1 / mps_percentages[6])
+    if mps_percentages[7] != 0:
+      autoevaluation.macroprocess_7_score = mps_scores[7] * (1 / mps_percentages[7])
+    if mps_percentages[8] != 0:
+      autoevaluation.macroprocess_8_score = mps_scores[8] * (1 / mps_percentages[8])
+    if mps_percentages[9] != 0:
+      autoevaluation.macroprocess_9_score = mps_scores[9] * (1 / mps_percentages[9])
+    if mps_percentages[10] != 0:
+        autoevaluation.macroprocess_10_score = mps_scores[10] * (1 / mps_percentages[10])
+    autoevaluation.save()
+
+    print("Update finished!!")
