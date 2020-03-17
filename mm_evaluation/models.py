@@ -168,10 +168,10 @@ class FinancesInformation(models.Model):
     class Meta:
         db_table = 'finances_information'
 
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from .general_use_functions import *
-""" Function to update scores of the respective macroprocess in Autoevaluation instance each time an answer is created. When users is implemented this should be used to get the actual current Autoevaluation instance. Macroprocesses IDs should range from 1 to 10"""
+""" Function to update scores of the respective macroprocess in Autoevaluation instance each time an answer is created. When users is implemented, this should be used to get the actual current Autoevaluation instance. Macroprocesses IDs should range from 1 to 10"""
 @receiver(post_save, sender=Answer)
 def update_mps_on_autevaluation(sender, **kwargs):
     autoevaluation = get_autoevaluation(1)
@@ -181,11 +181,14 @@ def update_mps_on_autevaluation(sender, **kwargs):
     mps_scores = [0 for i in range(11)]
     # Percentages of the MPs that are alreay answered
     mps_percentages = [0 for i in range(11)]
+    # Autoevaluation new total score
+    total_score = 0
 
     for answer in answer_list:
         answers_process = Process.objects.get(pk=answer.process_id.id)
         mps_scores[answers_process.macroprocess_id.id] += answer.score * answers_process.weight
         mps_percentages[answers_process.macroprocess_id.id] += answers_process.weight
+        print('JAJA')
 
     if mps_percentages[1] != 0:
         autoevaluation.macroprocess_1_score = mps_scores[1] * (1 / mps_percentages[1])
@@ -207,6 +210,18 @@ def update_mps_on_autevaluation(sender, **kwargs):
       autoevaluation.macroprocess_9_score = mps_scores[9] * (1 / mps_percentages[9])
     if mps_percentages[10] != 0:
         autoevaluation.macroprocess_10_score = mps_scores[10] * (1 / mps_percentages[10])
-    autoevaluation.save()
 
-    print("Update finished!!")
+    for score in mps_scores:
+        total_score += score
+    total_score /= 10
+
+
+    autoevaluation.final_score = total_score
+    autoevaluation.save()
+    print("{} {} {}".format(total_score, autoevaluation.final_score, autoevaluation.macroprocess_1_score))
+
+""" Function to delete entries of Answer, when a new Answer corresponding to the same process is created. When users is implemented, this should be used to get the actual current Autoevaluation instance. Macroprocesses IDs should range from 1 to 10"""
+@receiver(pre_save, sender=Answer)
+def update_answer(sender, instance, **kwargs):
+    autoevaluation = get_autoevaluation(1)
+    Answer.objects.filter(autoevaluation_id=autoevaluation.id, process_id=instance.process_id.id).delete()

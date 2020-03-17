@@ -1,9 +1,13 @@
-from .models import Autoevaluation, PYME, Answer
+from django.utils import timezone
+from django.shortcuts import get_object_or_404
+
+from .models import Autoevaluation, PYME, Answer, Process
 
 def is_autoevaluation_filled(a):
-    if a.final_score == None:
-        return False
-    return True
+    # If there are as many answers as there are processes, 'a' is completed.
+    if len(Answer.objects.filter(autoevaluation_id=a.id)) == len(Process.objects.all()):
+        return True
+    return False
 
 def get_autoevaluation(pyme_id):
     # When login is working, this should be edited accordingly. pyme_id in the filter query is the id of the pyme that is filling que autoevaluation.
