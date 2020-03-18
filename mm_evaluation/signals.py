@@ -25,8 +25,6 @@ def update_mps_on_autevaluation(sender, instance, **kwargs):
         answers_process = Process.objects.get(pk=answer.process_id.id)
         mps_scores[answers_process.macroprocess_id.id] += answer.score * answers_process.weight
         mps_percentages[answers_process.macroprocess_id.id] += answers_process.weight
-        print(answers_process.macroprocess_id.id)
-        print(answers_process.name)
 
     if mps_percentages[1] != 0:
         autoevaluation.macroprocess_1_score = mps_scores[1] * (1 / mps_percentages[1])
