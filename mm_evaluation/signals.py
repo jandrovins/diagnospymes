@@ -8,7 +8,7 @@ import decimal
 
 
 
-""" Function to update scores of the respective macroprocess in Autoevaluation instance each time an answer is created. When users is implemented, this should be used to get the actual current Autoevaluation instance. Macroprocesses IDs should range from 1 to 10"""
+""" Function to update scores of the respective macroprocess in Autoevaluation instance each time an answer is created. When users is implemented, this should be used to get the actual current Autoevaluation instance."""
 @receiver(post_save, sender=Answer)
 def update_mps_on_autevaluation(sender, instance, **kwargs):
     # The autoevaluation to which 'instance' belongs
