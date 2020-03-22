@@ -8,29 +8,12 @@ from django.views.generic import ListView, View, DetailView
 from django.views.generic.base import TemplateView
 
 from .models import Process, Macroprocess, Autoevaluation, Answer, PYME
+from .general_use_functions import *
 
 class AutoevaluationView(ListView):
     model = Macroprocess
     template_name = 'mm_evaluation/autoevaluation.html'
     context_object_name = 'macroprocesses_list'
-
-    def is_autoevaluation_filled(self, a):
-        if a.final_score == None:
-            return False
-        return True
-
-    def get_autoevaluation(self):
-        # When login is working, this should be edited accordingly. pyme_id in the filter query is the id of the pyme that is filling que autoevaluation.
-        autoevaluations_list = Autoevaluation.objects.filter(pyme_id=1).order_by('start_time')
-        for autoevaluation in autoevaluations_list:
-            if not self.is_autoevaluation_filled(autoevaluation):
-                return autoevaluation
-
-        return Autoevaluation(pyme_id=get_object_or_404(PYME, pk=1),
-                start_time=timezone.now(),
-                last_time_edition=timezone.now()
-                )
-
 
     def get(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
@@ -52,7 +35,7 @@ class AutoevaluationView(ListView):
         return self.render_to_response(context)
 
     def post(self, request, pk):
-        autoevaluation = self.get_autoevaluation()
+        autoevaluation = get_autoevaluation(1)
         process = get_object_or_404(Process, pk=pk)
         try:
             answer = Answer(autoevaluation_id=autoevaluation, process_id=process, score=request.POST['score'])
