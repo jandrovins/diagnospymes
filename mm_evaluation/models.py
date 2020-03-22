@@ -1,7 +1,7 @@
 from django.db import models
 
 
-
+"""Valid scores for answer instances. """
 VALID_SCORES = [
         (0, 'zero'),
         (1, 'one'),
@@ -9,6 +9,20 @@ VALID_SCORES = [
         (3, 'three'),
         (4, 'four'),
         (5, 'five'),
+        ]
+
+"""Valid macroprocesses number. """
+VALID_MACROPROCESS = [
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5),
+        (6, 6),
+        (7, 7),
+        (8, 8),
+        (9, 9),
+        (10, 10),
         ]
 
 class Sector(models.Model):
@@ -72,6 +86,8 @@ class Macroprocess(models.Model):
     description = models.CharField(max_length = 500, default="")
     """Name contains the macroprocess' high level name."""
     name = models.CharField(max_length = 50)
+    """Number of the macroprocess. """
+    number = models.IntegerField(choices=VALID_MACROPROCESS)
 
     class Meta:
         db_table = 'macroprocess'
