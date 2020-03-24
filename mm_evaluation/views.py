@@ -10,12 +10,19 @@ from django.views.generic.base import TemplateView
 from .models import Process, Macroprocess, Autoevaluation, Answer, PYME
 from .general_use_functions import *
 
+
+def begin_or_continue_autoevaluation(request):
+    autoevaluation = get_autoevaluation(1)
+    return HttpResponseRedirect(
+            reverse('mm_evaluation:autoevaluation', args=(autoevaluation.id))
+            )
+
 class AutoevaluationView(ListView):
     model = Macroprocess
     template_name = 'mm_evaluation/autoevaluation.html'
     context_object_name = 'macroprocesses_list'
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, autoevaluation, *args, **kwargs):
         self.object_list = self.get_queryset()
         allow_empty = self.get_allow_empty()
 

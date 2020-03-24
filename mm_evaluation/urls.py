@@ -5,7 +5,8 @@ from . import views
 
 app_name = 'mm_evaluation'
 urlpatterns = [
-        path('autoevaluacion/', views.AutoevaluationView.as_view(), name='autoevaluation'),
+        path('empezar_o_continuar_autoevaluacion/', views.begin_or_continue_autoevaluation, name='begin_or_continue_autoevaluation'),
+        path('autoevaluacion/<int:pk>/', views.AutoevaluationView.as_view(), name='autoevaluation'),
         path('<int:pk>/guardar_respuesta/', views.AutoevaluationView.as_view(), name='save_answer'),
         path('proceso_ya_respondido/', views.ProcessAlreadyAnswerView.as_view(), name='process_already_answer'),
         path('', views.IndexView.as_view(), name='index'),

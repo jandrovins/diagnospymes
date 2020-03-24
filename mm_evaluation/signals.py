@@ -1,5 +1,6 @@
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+from django.utils import timezone
 
 from .general_use_functions import *
 from .models import Answer, Autoevaluation, Process, Macroprocess
@@ -8,7 +9,7 @@ import decimal
 
 
 
-""" Function to update scores of the respective macroprocess in Autoevaluation instance each time an answer is created. When users is implemented, this should be used to get the actual current Autoevaluation instance."""
+""" Signal to update scores of the respective macroprocess in Autoevaluation instance each time an answer is created. When users is implemented, this should be used to get the actual current Autoevaluation instance."""
 @receiver(post_save, sender=Answer)
 def update_mps_on_autevaluation(sender, instance, **kwargs):
     # The autoevaluation to which 'instance' belongs
@@ -69,8 +70,15 @@ def update_mps_on_autevaluation(sender, instance, **kwargs):
 
     autoevaluation.save()
 
-""" Function to delete entries of Answer, when a new Answer corresponding to the same process is created. When users is implemented, this should be used to get the actual current Autoevaluation instance. Macroprocesses IDs should range from 1 to 10"""
+""" Signal to delete entries of Answer, when a new Answer corresponding to the same process is created. """
 @receiver(pre_save, sender=Answer)
 def update_answer(sender, instance, **kwargs):
     autoevaluation = Autoevaluation.objects.get(pk=instance.autoevaluation_id.id)
     Answer.objects.filter(autoevaluation_id=autoevaluation.id, process_id=instance.process_id.id).delete()
+
+""" Signal to update last_time_edition filed in Autoevaluation instance when an Answer is created. I.e. when the autoevaluation is edited."""
+@receiver(post_save, sender=Answer)
+def update_autoevaluation_last_edition(sender, instance, **kwargs):
+    autoevaluation = Autoevaluation.objects.get(pk=instance.autoevaluation_id.id)
+    autoevaluation.last_time_edition = timezone.now()
+    autoevaluation.save()

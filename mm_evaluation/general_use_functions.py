@@ -9,6 +9,7 @@ def is_autoevaluation_filled(a):
         return True
     return False
 
+""" This function returns the first created Autoevaluation that has not been completed. If all are completed, it will return a new instance of the autoevaluation."""
 def get_autoevaluation(pyme_id):
     # When login is working, this should be edited accordingly. pyme_id in the filter query is the id of the pyme that is filling que autoevaluation.
     autoevaluations_list = Autoevaluation.objects.filter(pyme_id=pyme_id).order_by('start_time')
