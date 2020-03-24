@@ -10,7 +10,7 @@
             <ul>
                 {% for process in macroprocess.process_set.all %}
 
-                <li>{{ process.description }}</li>
+                <li>{{ process.guiding_question }}</li>
                 <form action="{% url 'mm_evaluation:save_answer' process.id %}" method="post">
                     {% csrf_token %}
                     <p>Puntuación:</p>
