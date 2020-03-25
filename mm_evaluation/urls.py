@@ -18,4 +18,5 @@ urlpatterns = [
         path('recursos/', views.Resources.as_view()),
         path('resultados/', views.PreviousResults.as_view(), name='results'),
         path('resultados/<int:pk>/', views.ResultDetail.as_view(), name='result_detail'),
+        path('autoevaluacion/resultado/<int:pk>/', views.ResultDetail.as_view(), name='autoevaluation_result'),
         ]

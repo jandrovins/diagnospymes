@@ -46,7 +46,7 @@ class PYME(models.Model):
     contact_name = models.CharField(max_length=50)
     contact_number = models.CharField(max_length=10)
     contact_sex = models.CharField(max_length=10)
-    contact_birth_day = models.DateTimeField()
+    contact_birth_day = models.DateField()
     contact_id_type = models.CharField(max_length=30)
     contact_id_number = models.CharField(max_length=15)
     contact_education_level = models.CharField(max_length=40)
@@ -82,12 +82,10 @@ class Autoevaluation(models.Model):
 """This table contains the information regardin the different macroprocesses relevant to the self-evaluation process, which are 10 and describe the large areas of concern when it comes to logistical performance."""
 class Macroprocess(models.Model):
 
-    """Description is a text field which contains a brief explanations of a particular macroprocess."""
-    description = models.CharField(max_length = 500, default="")
     """Name contains the macroprocess' high level name."""
     name = models.CharField(max_length = 50)
     """Number of the macroprocess. """
-    number = models.IntegerField(choices=VALID_MACROPROCESS)
+    number = models.IntegerField(choices=VALID_MACROPROCESS, null=True)
 
     class Meta:
         db_table = 'macroprocess'

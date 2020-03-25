@@ -18,6 +18,12 @@ class AutoevaluationView(ListView):
     template_name = 'mm_evaluation/autoevaluation.html'
     context_object_name = 'macroprocesses_list'
 
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['autoevaluation'] = get_last_full_autoevaluation(1)
+        return context
+
     def get(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
         allow_empty = self.get_allow_empty()
@@ -52,6 +58,7 @@ class AutoevaluationView(ListView):
             # with POST data. This prevents data from being posted twice if a
             # user hits the Back button.
             return HttpResponseRedirect(reverse('mm_evaluation:autoevaluation'))
+
 
 
 class ProcessAlreadyAnswerView(TemplateView):
@@ -150,3 +157,5 @@ class Resources(View):
 
     def get(self, request, *args, **kwargs):
         return HttpResponse(render_to_string(self.template_name))
+
+

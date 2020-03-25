@@ -20,3 +20,11 @@ def get_autoevaluation(pyme_id):
             start_time=timezone.now(),
             last_time_edition=timezone.now()
             )
+
+def get_last_full_autoevaluation(pyme_id):
+    autoevaluation_list = Autoevaluation.objects.filter(pyme_id=pyme_id).order_by('start_time')
+    for autoevaluation in autoevaluation_list:
+        if is_autoevaluation_filled(autoevaluation):
+            full_autoevaluation = autoevaluation
+    return full_autoevaluation
+
