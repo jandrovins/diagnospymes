@@ -13,8 +13,9 @@ from .general_use_functions import *
 
 def begin_or_continue_autoevaluation(request):
     autoevaluation = get_autoevaluation(1)
+    autoevaluation.save()
     return HttpResponseRedirect(
-            reverse('mm_evaluation:autoevaluation', args=(autoevaluation.id))
+            reverse('mm_evaluation:autoevaluation', args=(autoevaluation.id,))
             )
 
 class AutoevaluationView(ListView):
@@ -22,7 +23,14 @@ class AutoevaluationView(ListView):
     template_name = 'mm_evaluation/autoevaluation.html'
     context_object_name = 'macroprocesses_list'
 
-    def get(self, request, autoevaluation, *args, **kwargs):
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['autoevaluation'] = self.autoevaluation
+        return context
+
+    def get(self, request, pk, *args, **kwargs):
+        self.autoevaluation = get_object_or_404(Autoevaluation, pk=pk)
         self.object_list = self.get_queryset()
         allow_empty = self.get_allow_empty()
 
@@ -41,9 +49,9 @@ class AutoevaluationView(ListView):
         context = self.get_context_data()
         return self.render_to_response(context)
 
-    def post(self, request, pk):
-        autoevaluation = get_autoevaluation(1)
+    def post(self, request, pk, apk):
         process = get_object_or_404(Process, pk=pk)
+        autoevaluation = get_object_or_404(Autoevaluation, pk=apk)
         try:
             answer = Answer(autoevaluation_id=autoevaluation, process_id=process, score=request.POST['score'])
             autoevaluation.last_time_edition = timezone.now()
@@ -55,7 +63,8 @@ class AutoevaluationView(ListView):
             # Always return an HttpResponseRedirect after successfully dealing
             # with POST data. This prevents data from being posted twice if a
             # user hits the Back button.
-            return HttpResponseRedirect(reverse('mm_evaluation:autoevaluation'))
+            return HttpResponseRedirect(reverse('mm_evaluation:autoevaluation', args=(autoevaluation.id,)))
+
 
 
 class ProcessAlreadyAnswerView(TemplateView):
@@ -127,3 +136,5 @@ class Resources(View):
 
     def get(self, request, *args, **kwargs):
         return HttpResponse(render_to_string(self.template_name))
+
+

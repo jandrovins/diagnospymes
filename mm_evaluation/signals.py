@@ -27,43 +27,43 @@ def update_mps_on_autevaluation(sender, instance, **kwargs):
         mps_score += answer.score * answers_process.weight
         mps_percentage += answers_process.weight
 
-    if instance.process_id.macroprocess_id.id == 1:
+    if instance.process_id.macroprocess_id.number == 1:
         autoevaluation.final_score -= decimal.Decimal(autoevaluation.macroprocess_1_score / 10)
         autoevaluation.macroprocess_1_score = mps_score * (1 / mps_percentage)
         autoevaluation.final_score += decimal.Decimal(autoevaluation.macroprocess_1_score / 10)
-    if instance.process_id.macroprocess_id.id == 2:
+    if instance.process_id.macroprocess_id.number == 2:
         autoevaluation.final_score -= decimal.Decimal(autoevaluation.macroprocess_2_score / 10)
         autoevaluation.macroprocess_2_score = mps_score * (1 / mps_percentage)
         autoevaluation.final_score += decimal.Decimal(autoevaluation.macroprocess_2_score / 10)
-    if instance.process_id.macroprocess_id.id == 3:
+    if instance.process_id.macroprocess_id.number == 3:
         autoevaluation.final_score -= decimal.Decimal(autoevaluation.macroprocess_3_score / 10)
         autoevaluation.macroprocess_3_score = mps_score * (1 / mps_percentage)
         autoevaluation.final_score += decimal.Decimal(autoevaluation.macroprocess_3_score / 10)
-    if instance.process_id.macroprocess_id.id == 4:
+    if instance.process_id.macroprocess_id.number == 4:
         autoevaluation.final_score -= decimal.Decimal(autoevaluation.macroprocess_4_score / 10)
         autoevaluation.macroprocess_4_score = mps_score * (1 / mps_percentage)
         autoevaluation.final_score += decimal.Decimal(autoevaluation.macroprocess_4_score / 10)
-    if instance.process_id.macroprocess_id.id == 5:
+    if instance.process_id.macroprocess_id.number == 5:
         autoevaluation.final_score -= decimal.Decimal(autoevaluation.macroprocess_5_score / 10)
         autoevaluation.macroprocess_5_score = mps_score * (1 / mps_percentage)
         autoevaluation.final_score += decimal.Decimal(autoevaluation.macroprocess_5_score / 10)
-    if instance.process_id.macroprocess_id.id == 6:
+    if instance.process_id.macroprocess_id.number == 6:
         autoevaluation.final_score -= decimal.Decimal(autoevaluation.macroprocess_6_score / 10)
         autoevaluation.macroprocess_6_score = mps_score * (1 / mps_percentage)
         autoevaluation.final_score += decimal.Decimal(autoevaluation.macroprocess_6_score / 10)
-    if instance.process_id.macroprocess_id.id == 7:
+    if instance.process_id.macroprocess_id.number == 7:
         autoevaluation.final_score -= decimal.Decimal(autoevaluation.macroprocess_7_score / 10)
         autoevaluation.macroprocess_7_score = mps_score * (1 / mps_percentage)
         autoevaluation.final_score += decimal.Decimal(autoevaluation.macroprocess_7_score / 10)
-    if instance.process_id.macroprocess_id.id == 8:
+    if instance.process_id.macroprocess_id.number == 8:
         autoevaluation.final_score -= decimal.Decimal(autoevaluation.macroprocess_8_score / 10)
         autoevaluation.macroprocess_8_score = mps_score * (1 / mps_percentage)
         autoevaluation.final_score += decimal.Decimal(autoevaluation.macroprocess_8_score / 10)
-    if instance.process_id.macroprocess_id.id == 9:
+    if instance.process_id.macroprocess_id.number == 9:
         autoevaluation.final_score -= decimal.Decimal(autoevaluation.macroprocess_9_score / 10)
         autoevaluation.macroprocess_9_score = mps_score * (1 / mps_percentage)
         autoevaluation.final_score += decimal.Decimal(autoevaluation.macroprocess_9_score / 10)
-    if instance.process_id.macroprocess_id.id == 10:
+    if instance.process_id.macroprocess_id.number == 10:
         autoevaluation.final_score -= decimal.Decimal(autoevaluation.macroprocess_10_score / 10)
         autoevaluation.macroprocess_10_score = mps_score * (1 / mps_percentage)
         autoevaluation.final_score += decimal.Decimal(autoevaluation.macroprocess_10_score / 10)

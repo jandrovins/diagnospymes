@@ -7,7 +7,7 @@ app_name = 'mm_evaluation'
 urlpatterns = [
         path('empezar_o_continuar_autoevaluacion/', views.begin_or_continue_autoevaluation, name='begin_or_continue_autoevaluation'),
         path('autoevaluacion/<int:pk>/', views.AutoevaluationView.as_view(), name='autoevaluation'),
-        path('<int:pk>/guardar_respuesta/', views.AutoevaluationView.as_view(), name='save_answer'),
+        path('<int:pk>/<int:apk>/guardar_respuesta/', views.AutoevaluationView.as_view(), name='save_answer'),
         path('proceso_ya_respondido/', views.ProcessAlreadyAnswerView.as_view(), name='process_already_answer'),
         path('', views.IndexView.as_view(), name='index'),
         path('mision/', views.Mission.as_view()),
@@ -19,4 +19,5 @@ urlpatterns = [
         path('recursos/', views.Resources.as_view()),
         path('resultados/', views.PreviousResults.as_view(), name='results'),
         path('resultados/<int:pk>/', views.ResultDetail.as_view(), name='result_detail'),
+        path('autoevaluacion/resultado/<int:pk>/', views.ResultDetail.as_view(), name='autoevaluation_result'),
         ]
