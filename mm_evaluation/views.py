@@ -7,8 +7,12 @@ from django.utils import timezone
 from django.views.generic import ListView, View, DetailView
 from django.views.generic.base import TemplateView
 
+import plotly.offline as opy
+import plotly.graph_objs as go
+
 from .models import Process, Macroprocess, Autoevaluation, Answer, PYME
 from .general_use_functions import *
+
 
 
 def begin_or_continue_autoevaluation(request):
@@ -130,6 +134,33 @@ class ResultDetail(DetailView):
     model = Autoevaluation
     template_name = 'mm_evaluation/resultdetail.html'
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        current_autoev = super().get_object()
+     
+        x = ['MP1', 'MP2', 'MP3', 'MP4', 'MP5', 'MP6', 'MP7', 'MP8', 'MP9', 'MP10']
+        y = []
+
+        y.append(current_autoev.macroprocess_1_score)
+        y.append(current_autoev.macroprocess_2_score)
+        y.append(current_autoev.macroprocess_3_score)
+        y.append(current_autoev.macroprocess_4_score)
+        y.append(current_autoev.macroprocess_4_score)
+        y.append(current_autoev.macroprocess_5_score)
+        y.append(current_autoev.macroprocess_6_score)
+        y.append(current_autoev.macroprocess_7_score)
+        y.append(current_autoev.macroprocess_8_score)
+        y.append(current_autoev.macroprocess_9_score)
+        y.append(current_autoev.macroprocess_10_score)
+        
+        data = [go.Bar(x=x, y=y)]
+        layout=go.Layout(title="Puntaje", xaxis={'title':'Macroproceso'}, yaxis={'title':'Resultado'})
+        figure=go.Figure(data=data,layout=layout)
+        div = opy.plot(figure, auto_open=False, output_type='div')
+        context['graph'] = div
+
+        return context
 
 class Resources(View):
     template_name = 'mm_evaluation/resources.html'
