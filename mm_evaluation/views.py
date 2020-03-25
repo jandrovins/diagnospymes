@@ -53,9 +53,9 @@ class AutoevaluationView(ListView):
         context = self.get_context_data()
         return self.render_to_response(context)
 
-    def post(self, request, pk, apk):
-        process = get_object_or_404(Process, pk=pk)
-        autoevaluation = get_object_or_404(Autoevaluation, pk=apk)
+    def post(self, request, process_id, autoevaluation_id):
+        process = get_object_or_404(Process, pk=process_id)
+        autoevaluation = get_object_or_404(Autoevaluation, pk=autoevaluation_id)
         try:
             answer = Answer(autoevaluation_id=autoevaluation, process_id=process, score=request.POST['score'])
             autoevaluation.last_time_edition = timezone.now()
