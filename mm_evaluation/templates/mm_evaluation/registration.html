@@ -1,0 +1,9 @@
+<form action="{% url 'mm_evaluation:registration' %}" method="post" >
+{% csrf_token %}
+<table>
+    {{ user_registration_form.as_p }}
+    {{ PYME_registration_form.as_p }}
+</table>
+
+<input type="submit" value="Enviar">
+</form>

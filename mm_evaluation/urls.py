@@ -1,4 +1,5 @@
-from django.urls import path
+from django.contrib.auth import views as auth_views
+from django.urls import path, reverse_lazy
 
 from . import views
 
@@ -20,4 +21,13 @@ urlpatterns = [
         path('resultados/', views.PreviousResults.as_view(), name='results'),
         path('resultados/<int:pk>/', views.ResultDetail.as_view(), name='result_detail'),
         path('autoevaluacion/resultado/<int:pk>/', views.ResultDetail.as_view(), name='autoevaluation_result'),
+        path('registro/', views.registration, name='registration'),
+        path('registro_exitoso/', views.SuccessfulRegistrationView.as_view(), name='successful_registration'),
+        path('login/', auth_views.LoginView.as_view(), name="login"),
+        path('logout/', auth_views.logout_then_login, name="logout"),
+        path('cambiar_contraseña/', auth_views.PasswordChangeView.as_view(
+            success_url=reverse_lazy('mm_evaluation:password_change_done')
+            ),
+            name="password_change"),
+        path('contraseña_cambiada/', auth_views.PasswordChangeDoneView.as_view(), name="password_change_done"),
         ]
