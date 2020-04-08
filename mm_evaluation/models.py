@@ -91,6 +91,7 @@ class Macroprocess(models.Model):
 
     class Meta:
         db_table = 'macroprocess'
+        ordering = ['id']
 
 
 class Process(models.Model):

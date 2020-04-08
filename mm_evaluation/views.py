@@ -44,6 +44,8 @@ class AutoevaluationView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['autoevaluation'] = self.autoevaluation
+        if is_autoevaluation_filled(self.autoevaluation):
+            context['is_autoevaluation_filled'] = True
         return context
 
     def get(self, request, pk, *args, **kwargs):
@@ -66,21 +68,18 @@ class AutoevaluationView(LoginRequiredMixin, ListView):
         context = self.get_context_data()
         return self.render_to_response(context)
 
-    def post(self, request, process_id, autoevaluation_id):
-        process = get_object_or_404(Process, pk=process_id)
+    def post(self, request,  autoevaluation_id):
         autoevaluation = get_object_or_404(Autoevaluation, pk=autoevaluation_id)
-        try:
-            answer = Answer(autoevaluation_id=autoevaluation, process_id=process, score=request.POST['score'])
-            autoevaluation.last_time_edition = timezone.now()
-            autoevaluation.save()
-            answer.save()
-        except (IntegrityError):
-            return HttpResponseRedirect(reverse_lazy('mm_evaluation:process_already_answer'))
-        else:
-            # Always return an HttpResponseRedirect after successfully dealing
-            # with POST data. This prevents data from being posted twice if a
-            # user hits the Back button.
-            return HttpResponseRedirect(reverse_lazy('mm_evaluation:autoevaluation', args=(autoevaluation.id,)))
+        
+        for key, value in request.POST.items():
+            if 'score_' in key:
+                score = value
+                if score != '':
+                    answer = Answer(autoevaluation_id=autoevaluation, process_id=Process.objects.get(id=int(key.split('_')[1])), score=score)
+                    answer.save()
+        
+        return HttpResponseRedirect(reverse_lazy('mm_evaluation:autoevaluation', args=(autoevaluation.id,))+'?page='+str(answer.process_id.macroprocess_id.number))
+
 
 
 
