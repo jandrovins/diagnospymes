@@ -12,15 +12,7 @@
 
             <li>{{ process.guiding_question }}</li>
             <p>Puntuación:</p>
-            <select name="score_{{ process.id }}">
-                <option value="" selected>---------</option>
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select>
+            <input type="range" min="0" max="5" value="2" class="slider" id="range" name="score_{{ process.id }}">
             {% endfor %}
         </ol>
         {% endfor %}
@@ -42,9 +34,9 @@
         {% if page_obj.has_next %}
         <a href="?page={{ page_obj.next_page_number }}">Avanzar al siguiente</a>
         {% else %}
-            {% if is_autoevaluation_filled %}
-            <a href = "{% url 'mm_evaluation:autoevaluation_result' autoevaluation.id %}">Terminar de evaluar y ver resultados. ADVERTENCIA: no podrá editar los puntajes que ha seleccionado en esta autoevaluación.</a>
-            {% endif %}
+        {% if is_autoevaluation_filled %}
+        <a href = "{% url 'mm_evaluation:autoevaluation_result' autoevaluation.id %}">Terminar de evaluar y ver resultados. ADVERTENCIA: no podrá editar los puntajes que ha seleccionado en esta autoevaluación.</a>
+        {% endif %}
         {% endif %}
     </span>
 </div>
