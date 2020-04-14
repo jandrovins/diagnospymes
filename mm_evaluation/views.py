@@ -57,7 +57,7 @@ class AutoevaluationView(ListView):
         process = get_object_or_404(Process, pk=process_id)
         autoevaluation = get_object_or_404(Autoevaluation, pk=autoevaluation_id)
         try:
-            answer = Answer(autoevaluation_id=autoevaluation, process_id=process, score=request.POST['score'])
+            answer = Answer(autoevaluation=autoevaluation, process=process, score=request.POST['score'])
             autoevaluation.last_time_edition = timezone.now()
             autoevaluation.save()
             answer.save()
@@ -127,7 +127,7 @@ class PreviousResults(ListView):
     context_object_name = 'all_previous_results'
 
     def get_queryset(self):
-        return Autoevaluation.objects.filter(pyme_id_id=1,final_score__isnull=False).order_by('last_time_edition')
+        return Autoevaluation.objects.filter(pyme_id=1,final_score__isnull=False).order_by('last_time_edition')
 
       
 class ResultDetail(DetailView):
