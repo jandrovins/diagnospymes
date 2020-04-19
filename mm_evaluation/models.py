@@ -30,15 +30,18 @@ class Sector(models.Model):
     name = models.CharField(max_length=20)
     description = models.CharField(max_length=400)
 
+    def __str__(self):
+        return self.name
+
     class Meta():
         db_table = 'sector'
 
 
 class PYME(models.Model):
-    """the class PYME is for making a PYMES table in MariaDB, the filds are: sector refes to the id of sector the company is involve with, email_address refes to the username to login and the email of the company, pyme_name refers to the name of the company, password refers to an encrypted string, nit refers to a tributary number, phone_number refers to the company phone number, address is the companys address, contact_name is the name of the manager of the company, contact_number is the managers phone number, contact_sex is the sex of the maneger of the company, contact_birth_day is the managers birthday, contact_id_type is the managers id type, contact_id_number managers id number, contact_educational_level is the managers educational level, terms_conditions_acceptance a boolean true or false if the company accepts terms and contions, contact_time_on_charge is the managers time on charge of the company"""
+    """the class PYME is for making a PYMES table in MariaDB, the filds are: sector refes to the id of sector the company is involve with, email_address refes to the username to login and the email of the company, name refers to the name of the company, password refers to an encrypted string, nit refers to a tributary number, phone_number refers to the company phone number, address is the companys address, contact_name is the name of the manager of the company, contact_number is the managers phone number, contact_sex is the sex of the maneger of the company, contact_birth_day is the managers birthday, contact_id_type is the managers id type, contact_id_number managers id number, contact_educational_level is the managers educational level, terms_conditions_acceptance a boolean true or false if the company accepts terms and contions, contact_time_on_charge is the managers time on charge of the company"""
     sector = models.ForeignKey(Sector, on_delete=models.CASCADE)
     email_address = models.CharField(max_length=100)
-    pyme_name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
     password = models.CharField(max_length=100)
     nit = models.CharField(max_length=30)
     phone_number = models.CharField(max_length=10)
@@ -52,6 +55,9 @@ class PYME(models.Model):
     contact_education_level = models.CharField(max_length=40)
     terms_conditions_acceptance = models.BooleanField()
     contact_time_on_charge = models.IntegerField()
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = 'pyme'
@@ -74,6 +80,8 @@ class Autoevaluation(models.Model):
     macroprocess_9_score = models.DecimalField(max_digits=3, decimal_places=2, default=0)
     macroprocess_10_score = models.DecimalField(max_digits=3, decimal_places=2, default=0)
 
+    def __str__(self):
+        return 'Autoevaluation of {} last edited on {}'.format(self.pyme.name, self.last_time_edition)
 
     class Meta:
         db_table = 'autoevaluation'
@@ -87,6 +95,9 @@ class Macroprocess(models.Model):
     """Number of the macroprocess. """
     number = models.IntegerField(choices=VALID_MACROPROCESS, null=True)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         db_table = 'macroprocess'
 
@@ -99,6 +110,8 @@ class Process(models.Model):
     guiding_question = models.CharField(max_length=400,default=' ')
     weight = models.FloatField()
 
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = 'process'
@@ -110,6 +123,8 @@ class Answer(models.Model):
     autoevaluation = models.ForeignKey(Autoevaluation, on_delete=models.CASCADE)
     score = models.IntegerField(choices=VALID_SCORES)
 
+    def __str__(self):
+        return 'Answer from {} to "{}" in autoevalution with id {}'.format(self.autoevaluation.pyme.name, self.process, self.autoevaluation.id)
 
     class Meta:
         db_table = 'answer'
@@ -129,13 +144,16 @@ class SpecificPractice(models.Model):
     """Recommendation is a text which tells you how to achieve the level of this specific practice."""
     recommendation = models.CharField(max_length = 500)
 
+    def __str__(self):
+        return 'Specific practice for process {} on score {}'.format(self.process.name, self.process.score)
+
     class Meta:
         db_table = 'specific_practice'
 
 
 """This table contains the information regarding general practices, which are related to global levels of performance and are used to describe briefly the behaviour of a PYME in a given level."""
 class GeneralPractice(models.Model):
-    """name refers to the name of the respective generl practice level"""
+    """Name refers to the name of the respective general practice level"""
     name = models.CharField(max_length=40, default=' ')
     """Score is the level of overall logistic performance this specific practive is related to, it is a number between 0 and 5."""
     score = models.IntegerField(choices=VALID_SCORES)
@@ -143,6 +161,9 @@ class GeneralPractice(models.Model):
     description = models.CharField(max_length = 500)
     """Recommendation is a text which tells you how to achieve the level of this general practice."""
     recommendation = models.CharField(max_length = 500)
+
+    def __str__(self):
+        return 'General practice {} to score {}'.format(self.name, self.score)
 
     class Meta:
         db_table = 'general_practice'
@@ -154,6 +175,9 @@ class Archive(models.Model):
     file_object = models.FileField()
     file_type = models.CharField(max_length=10)
     file_name = models.CharField(max_length=40)
+
+    def __str__(self):
+        return 'File with name {} created by {}'.format(self.file_name, self.pyme.name)
 
     class Meta:
         db_table = 'archive'
@@ -178,6 +202,9 @@ class FinancesInformation(models.Model):
     fixed_costs_expences = models.BigIntegerField()
     variable_costs_expences = models.BigIntegerField()
     ebitda = models.IntegerField()
+
+    def __str__(self):
+        return 'Finances information from {}'.format(self.pyme.name)
 
     class Meta:
         db_table = 'finances_information'
