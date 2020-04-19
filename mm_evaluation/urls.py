@@ -23,6 +23,7 @@ urlpatterns = [
         path('autoevaluacion/resultado/<int:pk>/', views.ResultDetail.as_view(), name='autoevaluation_result'),
         path('registro/', views.registration, name='registration'),
         path('registro_exitoso/', views.SuccessfulRegistrationView.as_view(), name='successful_registration'),
+        path('acceso_denegado/', views.AccessDeniedView.as_view(), name='denied_access'),
         path('login/', auth_views.LoginView.as_view(), name="login"),
         path('logout/', auth_views.logout_then_login, name="logout"),
         path('cambiar_contraseña/', auth_views.PasswordChangeView.as_view(

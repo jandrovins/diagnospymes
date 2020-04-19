@@ -1,6 +1,6 @@
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.db import IntegrityError,transaction
 from django.http import HttpResponse,HttpResponseRedirect
@@ -39,6 +39,9 @@ class AutoevaluationView(LoginRequiredMixin, ListView):
     template_name = 'mm_evaluation/autoevaluation.html'
     context_object_name = 'macroprocesses_list'
 
+    def test_user_owns_autoevaluation(self, user, autoevaluation):
+        """ Method to test if user owns the autoevaluation that is accessing."""
+        return user.pyme == autoevaluation.pyme_id
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -46,7 +49,10 @@ class AutoevaluationView(LoginRequiredMixin, ListView):
         return context
 
     def get(self, request, pk, *args, **kwargs):
+        print(pk)
         self.autoevaluation = get_object_or_404(Autoevaluation, pk=pk)
+        if not self.test_user_owns_autoevaluation(request.user, self.autoevaluation):
+            return redirect(reverse('mm_evaluation:denied_access'))
         self.object_list = self.get_queryset()
         allow_empty = self.get_allow_empty()
 
@@ -66,8 +72,10 @@ class AutoevaluationView(LoginRequiredMixin, ListView):
         return self.render_to_response(context)
 
     def post(self, request, process_id, autoevaluation_id):
-        process = get_object_or_404(Process, pk=process_id)
         autoevaluation = get_object_or_404(Autoevaluation, pk=autoevaluation_id)
+        if not self.test_user_owns_autoevaluation(request.user, autoevaluation):
+            return redirect(reverse('mm_evaluation:denied_access'))
+        process = get_object_or_404(Process, pk=process_id)
         try:
             answer = Answer(autoevaluation_id=autoevaluation, process_id=process, score=request.POST['score'])
             autoevaluation.last_time_edition = timezone.now()
@@ -162,22 +170,22 @@ class ResultDetail(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        current_autoev = super().get_object()
+        self.autoevaluation = super().get_object()
      
         x = ['MP1', 'MP2', 'MP3', 'MP4', 'MP5', 'MP6', 'MP7', 'MP8', 'MP9', 'MP10']
         y = []
 
-        y.append(current_autoev.macroprocess_1_score)
-        y.append(current_autoev.macroprocess_2_score)
-        y.append(current_autoev.macroprocess_3_score)
-        y.append(current_autoev.macroprocess_4_score)
-        y.append(current_autoev.macroprocess_4_score)
-        y.append(current_autoev.macroprocess_5_score)
-        y.append(current_autoev.macroprocess_6_score)
-        y.append(current_autoev.macroprocess_7_score)
-        y.append(current_autoev.macroprocess_8_score)
-        y.append(current_autoev.macroprocess_9_score)
-        y.append(current_autoev.macroprocess_10_score)
+        y.append(self.autoevaluation.macroprocess_1_score)
+        y.append(self.autoevaluation.macroprocess_2_score)
+        y.append(self.autoevaluation.macroprocess_3_score)
+        y.append(self.autoevaluation.macroprocess_4_score)
+        y.append(self.autoevaluation.macroprocess_4_score)
+        y.append(self.autoevaluation.macroprocess_5_score)
+        y.append(self.autoevaluation.macroprocess_6_score)
+        y.append(self.autoevaluation.macroprocess_7_score)
+        y.append(self.autoevaluation.macroprocess_8_score)
+        y.append(self.autoevaluation.macroprocess_9_score)
+        y.append(self.autoevaluation.macroprocess_10_score)
         
         data = [go.Bar(x=x, y=y)]
         layout=go.Layout(title="Puntaje", xaxis={'title':'Macroproceso'}, yaxis={'title':'Resultado'})
@@ -186,6 +194,12 @@ class ResultDetail(LoginRequiredMixin, DetailView):
         context['graph'] = div
 
         return context
+
+    def get(self, request, *args, **kwargs):
+        response_class = super().get(request, *args, **kwargs)
+        if not request.user.pyme == self.autoevaluation.pyme_id:
+            return redirect(reverse('mm_evaluation:denied_access'))
+        return response_class
 
 class Resources(View):
     template_name = 'mm_evaluation/resources.html'
@@ -231,3 +245,6 @@ def registration(request):
         'user_registration_form': user_form,
         'PYME_registration_form': PYME_form,
         })
+
+class AccessDeniedView(TemplateView):
+    template_name = "mm_evaluation/denied_access.html"
