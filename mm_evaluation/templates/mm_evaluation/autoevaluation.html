@@ -24,10 +24,10 @@
                     </select>
                     <p><input type="submit" value="Enviar"></p>
                 </form>
-            {% endfor %}
-        </ul>
-    </li>
-{% endfor %}
-<a href = "{% url 'mm_evaluation:autoevaluation_result' autoevaluation.id %}">Terminar</a>
-  </ol>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}
+        <a href = "{% url 'mm_evaluation:autoevaluation_result' autoevaluation.id %}">Terminar</a>
+    </ol>
 </body>

@@ -128,7 +128,7 @@ class Vision(View):
         return HttpResponse(render_to_string(self.template_name))
 
 class Metodology(View):
-    template_name = 'mm_evaluation/metodology.html'
+    template_name = 'mm_evaluation/methodology.html'
 
     def get(self, request, *args, **kwargs):
         return HttpResponse(render_to_string(self.template_name))
