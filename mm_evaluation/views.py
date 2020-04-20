@@ -23,6 +23,22 @@ from .models import Answer, Autoevaluation, Macroprocess, Process,  PYME
 
 @login_required
 def begin_or_continue_autoevaluation(request):
+    """This view reddirects to the autoevaluation that should be filled.
+
+    This view should allways be accessed before AutoevaluationView, as this view will
+    pass the Autoevaluation instance ID as argument. The objective of this view is to
+    find the first created but not completed autoevaluation belonging to the PYME logged in,
+    and redirect to mm_evaluation:autoevaluation passing the autoevaluation ID as argument.
+    If there are no completed autoevaluations, this view will create one, and pass it instead.
+
+    Args:
+        request (HttpRequest): HttpRequest object holding state and metadata for the request made.
+
+    Returns:
+        HttpResponseReddirect object pointing to AutoevaluationView and passing the ID of the
+        autoevaluation's to be scored as argument.
+
+    """
     autoevaluation = get_autoevaluation(request.user.pyme.pk)
     autoevaluation.save()
     return HttpResponseRedirect(
@@ -30,6 +46,13 @@ def begin_or_continue_autoevaluation(request):
             )
 
 class AutoevaluationView(LoginRequiredMixin, ListView):
+    """View to handle Autoevaluation instances scoring.
+
+    Inherits from LoginRequiredMixin and ListView. Shows processes separated on macroprocesses,
+    and uses pagination for macroprocesses. This is, for each page, one macroprocess and its processes
+    will be displayed. Also, a form to score each process will be rendered.
+
+    """
     # For use in LoginRequiredMixin
     login_url = reverse_lazy('mm_evaluation:login')
     permission_denied_message = "Debes ingresar a tu cuenta para responder las autoevaluaciones."
@@ -40,7 +63,17 @@ class AutoevaluationView(LoginRequiredMixin, ListView):
     context_object_name = 'macroprocesses_list'
 
     def test_user_owns_autoevaluation(self, user, autoevaluation):
-        """ Method to test if user owns the autoevaluation that is accessing."""
+        """ Method to test if user owns the autoevaluation that is accessing.
+
+        Args:
+            user (User): the User object that is accessing the autoealuations page.
+            autoevaluation (Autoevaluation): the autoevaluation that the user is trying
+                to access.
+
+        Returns:
+            A boolean, indicating whether the user.pyme object equals autoevaluation.pyme_id.
+
+        """
         return user.pyme == autoevaluation.pyme_id
 
     def get_context_data(self, **kwargs):
@@ -49,8 +82,8 @@ class AutoevaluationView(LoginRequiredMixin, ListView):
         return context
 
     def get(self, request, pk, *args, **kwargs):
-        print(pk)
         self.autoevaluation = get_object_or_404(Autoevaluation, pk=pk)
+        # Check if user owns autoevaluation
         if not self.test_user_owns_autoevaluation(request.user, self.autoevaluation):
             return redirect(reverse('mm_evaluation:denied_access'))
         self.object_list = self.get_queryset()
@@ -73,32 +106,15 @@ class AutoevaluationView(LoginRequiredMixin, ListView):
 
     def post(self, request, process_id, autoevaluation_id):
         autoevaluation = get_object_or_404(Autoevaluation, pk=autoevaluation_id)
+        # Check if user owns autoevaluation
         if not self.test_user_owns_autoevaluation(request.user, autoevaluation):
             return redirect(reverse('mm_evaluation:denied_access'))
         process = get_object_or_404(Process, pk=process_id)
-        try:
-            answer = Answer(autoevaluation_id=autoevaluation, process_id=process, score=request.POST['score'])
-            autoevaluation.last_time_edition = timezone.now()
-            autoevaluation.save()
-            answer.save()
-        except (IntegrityError):
-            return HttpResponseRedirect(reverse_lazy('mm_evaluation:process_already_answer'))
-        else:
-            # Always return an HttpResponseRedirect after successfully dealing
-            # with POST data. This prevents data from being posted twice if a
-            # user hits the Back button.
-            return HttpResponseRedirect(reverse_lazy('mm_evaluation:autoevaluation', args=(autoevaluation.id,)))
-
-
-
-class ProcessAlreadyAnswerView(LoginRequiredMixin, TemplateView):
-    # For use in LoginRequiredMixin
-    login_url = reverse_lazy('mm_evaluation:login')
-    permission_denied_message = "Debes ingresar a tu cuenta para acceder a esta sección."
-
-    template_name = 'mm_evaluation/process_already_answer.html'
-
-
+        answer = Answer(autoevaluation_id=autoevaluation, process_id=process, score=request.POST['score'])
+        autoevaluation.last_time_edition = timezone.now()
+        autoevaluation.save()
+        answer.save()
+        return HttpResponseRedirect(reverse_lazy('mm_evaluation:autoevaluation', args=(autoevaluation.id,)))
 
 class IndexView(View):
     template_name = 'mm_evaluation/index.html'
@@ -217,6 +233,20 @@ class SuccessfulRegistrationView(LoginRequiredMixin, TemplateView):
 
 @transaction.atomic
 def registration(request):
+    """This view handles registration page.
+
+    Creates two forms: UserRegistrationForm and PYMERegistrationForm. The former is used 
+    to get information related to the User model and the latter information related to the PYME
+    model.
+
+    Args:
+        request (HttpRequest): HttpRequest object holding state and metadata for the request made.
+
+    Returns:
+        HttpResponse redirecting to home page if registration succeded. If some form fields are
+        invalid, displays the errors and redirects to registration page.
+
+    """
     user_form = UserRegistrationForm(request.POST, prefix="user")
     PYME_form = PYMERegistrationForm(request.POST, prefix="PYME")
     # if this is a POST request we need to process the form data
@@ -247,4 +277,11 @@ def registration(request):
         })
 
 class AccessDeniedView(TemplateView):
+    """View used when a user is accessing a page that does not belong to him.
+
+    Renders a template that displays an error message and a link to home page.
+    This view should be redirected to whenever a user is trying to access model instances
+    that are not linkes to its PYME object (i.e. user.pyme).
+
+    """
     template_name = "mm_evaluation/denied_access.html"

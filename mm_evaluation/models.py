@@ -2,7 +2,6 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
-"""Valid scores for answer instances. """
 VALID_SCORES = [
         (0, 'zero'),
         (1, 'one'),
@@ -11,8 +10,8 @@ VALID_SCORES = [
         (4, 'four'),
         (5, 'five'),
         ]
+"""Valid scores for answer instances."""
 
-"""Valid macroprocesses number. """
 VALID_MACROPROCESS = [
         (1, 1),
         (2, 2),
@@ -25,15 +24,15 @@ VALID_MACROPROCESS = [
         (9, 9),
         (10, 10),
         ]
+"""Valid macroprocesses number."""
 
-"""Valid ID type for PYME's contact. """
 VALID_ID_TYPE = [
         ('CC', 'Cédula de Ciudadanía'),
         ('CE', 'Cédula de Extranjería'),
         ('PA', 'Pasaporte'),
         ]
+"""Valid ID type for PYME's contact."""
 
-"""Valid education level for PYME's contact. """
 VALID_EDUCATION_LEVEL = [
         ('primaria', 'Primaria'),
         ('secundaria', 'Secundaria'),
@@ -42,9 +41,17 @@ VALID_EDUCATION_LEVEL = [
         ('universitario', 'Universitario'),
         ('posgrado', 'Posgrado'),
         ]
+"""Valid education level for PYME's contact."""
 
 class Sector(models.Model):
-    """The class Sector is for making a sectors table in MariaDB, based in economic secotrs in Colombia, the fields are: name is the sectors name in wich the company is involve, description is the description of the sector"""
+    """Sector is the abstraction for economic sectors.
+
+    Every PYME has to be related to a Sector.
+
+    Fields:
+        name (models.CharField): is the sector's name. Maximum is 20 characters.
+        description (models.CharField): is the description of the sector. Maximum is 400 characters.
+    """
     name = models.CharField(max_length=20)
     description = models.CharField(max_length=400)
 
@@ -56,7 +63,25 @@ class Sector(models.Model):
 
 
 class PYME(models.Model):
-    """the class PYME is for making a PYMES table in MariaDB, the filds are: sector_id refes to the id of sector the company is involve with, pyme_name refers to the name of the company, password refers to an encrypted string, nit refers to a tributary number, phone_number refers to the company phone number, address is the companys address, contact_name is the name of the manager of the company, contact_number is the managers phone number, contact_sex is the sex of the maneger of the company, contact_birth_date is the managers birthday, contact_id_type is the managers id type, contact_id_number managers id number, contact_educational_level is the managers educational level, terms_conditions_acceptance a boolean true or false if the company accepts terms and contions, contact_time_on_charge is the managers time on charge of the company"""
+    """This model contains general information related to the company.
+
+    Fields:
+        user (models.OneToOneField): it is a Foreign key with auth.models.User. Used to manage authentication and accounting.
+        contact_sex (models.CharField): is the sex of the company's contact. Maximum is 10 characters.
+        contact_phone_number (models.CharField): is the company's contact phone number. Maximum is 10 characters.
+        contact_birth_date (models.DateField): is the company's contact birthday.
+        contact_id_type (models.CharField): is the company's contact id type. Maximum is 30 characters.
+        contact_id_number (models.CharField): company's contact id number. Maximum is 15 characters.
+        contact_time_on_charge (models.IntegerField): is the company's contact time on charge.
+        contact_education_level (models.CharField): is the company's contact education level. Maximum is 40 characters.
+        pyme_name (models.CharField): refers to the name of the company. Maximum is 100 characters.
+        sector_id (models.ForeignKey): is a foreign key to Sector model.
+        nit (models.CharField): refers to the tributary number of the company in Colombia. Maximum is 30 characters.
+        address (models.CharField): is the company's general office address. Maximum is 50 characters.
+        phone_number (models.CharField): refers to the company's phone number. Maximum is 10 characters.
+        terms_conditions_acceptance (models.BooleanField): depends on whether the PYME has accepted our Terms and Conditions or not.
+
+    """
     user                    = models.OneToOneField(User, on_delete=models.CASCADE)
     contact_sex             = models.CharField(max_length=10)
     contact_phone_number    = models.CharField(max_length=10)
@@ -77,7 +102,20 @@ class PYME(models.Model):
 
 
 class Autoevaluation(models.Model):
-    """pyme_id is the id of the PYME for whom the autoevaluation will be filled out. 'start_time' refers to when the autoevaluation had begun. 'last_time_edition' refers to the last edition time of the autoevaluation. 'final_score' refers to the final ponderation, when all macroprocesses have been filled out."""
+    """This model contains the summary result autoevaluations.
+
+    This model is related to only one PYME object and as many Answer instances as the number of
+    Process instances in existence.
+
+    Fields:
+        pyme_id (models.ForeignKey): PYME instance whom this autoevalution belongs.
+        start_time (models.DateField): date when autoevaluation had begun.
+        last_time_edition (models.DateField): autoevaluation's last edition date.
+        final_score (models.DecimalField): refers to the final ponderation.
+        macroprocess_*_score (models.DecimalField): is the mean score of the Answer instances (that have already
+            been answered) whose Process instance belongs to this Macroprocess.
+
+    """
     pyme_id = models.ForeignKey(PYME, on_delete=models.CASCADE)
     start_time = models.DateField()
     last_time_edition = models.DateField()
@@ -98,12 +136,24 @@ class Autoevaluation(models.Model):
         db_table = 'autoevaluation'
 
 
-"""This table contains the information regardin the different macroprocesses relevant to the self-evaluation process, which are 10 and describe the large areas of concern when it comes to logistical performance."""
 class Macroprocess(models.Model):
+    """This model contains general information of each Macroprocess.
 
-    """Name contains the macroprocess' high level name."""
+    This model contains the information regarding the different macroprocesses, which are 10 and describe the large 
+    areas of concern when it comes to logistical performance.
+
+    Fields:
+        name (models.CharField): is the name of the macroprocess. Maximum is 50 characters.
+        number (models.IntegerField): is the number identifying the macroprocess. ID is no sufficient
+            because of the following scenario: if one deleted the the first macroprocess and created it again, 
+            querying the macroprocess with ID 1 would fail, and instead one would have to query ID 11 (as we
+            have always 10 macroprocesses). Having this field, one can query macroprocess with number 1, and
+            it will always be the one we expect. Also, IDs depends on the order in which macroprocesses were added
+            to the database. This field makes our lives easier.
+
+    """
+
     name = models.CharField(max_length = 50)
-    """Number of the macroprocess. """
     number = models.IntegerField(choices=VALID_MACROPROCESS, null=True)
 
     class Meta:
@@ -111,7 +161,20 @@ class Macroprocess(models.Model):
 
 
 class Process(models.Model):
-    """This is the database table where general information related to each process is stored. 'description' makes reference to the process sspecific description. Weight is needed when computing the macroprocess score. 'macroprocess_id' is the macroprocess to which the process belongs."""
+    """Saves each Process's information.
+
+    This is the model where general information related to each process is stored. This will be used when creating
+    Answer instances for autoevaluations.
+
+    Fields:
+        macroprocess_id (models.ForeignKey): is the macroprocess to which the process belongs.
+        name (models.CharField): makes reference to the process's name. Maximum is 50 characters.
+        description (models.CharField): makes reference to the process's description. Maximum is 50 characters.
+        guiding_question (models.CharField): when answering the autoevaluation, this field will be used to help 
+            the user this process's maturity level. Maximum is 400 characters.
+        weight (models.FloatField): is needed when computing the macroprocess score.
+
+    """
     macroprocess_id = models.ForeignKey(Macroprocess, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, default='')
     description = models.CharField(max_length=500)
@@ -124,7 +187,16 @@ class Process(models.Model):
 
 
 class Answer(models.Model):
-    """When a process is evaluated in an autoevaluation an entry in the 'answer' table will be created."""
+    """Saves needed information to store the score related to a Process and an Autoevaluation
+    
+    When a process is evaluated in an autoevaluation, an instance of the Answer model will be created.
+
+    Fields:
+        process_id (models.ForeignKey): is the Process instance for whom this answer holds its score.
+        autoevaluation_id (models.ForeignKey): is the Autoevaluation instance for whom this answer belongs.
+        score (models.IntegerField): is the score given by the user.
+
+    """
     process_id = models.ForeignKey(Process, on_delete=models.CASCADE)
     autoevaluation_id = models.ForeignKey(Autoevaluation, on_delete=models.CASCADE)
     score = models.IntegerField(choices=VALID_SCORES)
@@ -137,30 +209,50 @@ class Answer(models.Model):
                 ]
 
 
-        """This table contains the information regarding specific practices, which are directly related to each level of each process and are used to describe the behaviour of a certain level in each process."""
 class SpecificPractice(models.Model):
-    """Process_id is a foreign key, which relates this specific practice to its corresponding process."""
+    """Saves SpecificPractice instances related information.
+
+    This table contains the information regarding specific practices, which are directly related to each level of 
+    each process and are used to describe the behaviour of a certain level in each process.
+
+    Fields:
+        process_id (models.ForeignKey): is the process for whom this SpecificPractice instance belongs.
+        score (models.IntegerField): Score is the level of process this specific practive is related to, 
+            it is a number between 0 and 5.
+        description (models.CharField): is a text field which contains a brief explanations of a particular
+            specific practice. Maximum is 400 characters.
+        recommendation (models.CharField): is a text which tells the user how to achieve the level of this 
+            specific practice. Maximum is 400 characters.
+
+    """
     process_id = models.ForeignKey(Process,on_delete=models.CASCADE)
-    """Score is the level of process this specific practive is related to, it is a number between 0 and 5."""
     score = models.IntegerField(choices=VALID_SCORES)
-    """Description is a text field which contains a brief explanations of a particular specific practice."""
-    description = models.CharField(max_length = 500)
-    """Recommendation is a text which tells you how to achieve the level of this specific practice."""
-    recommendation = models.CharField(max_length = 500)
+    description = models.CharField(max_length = 400)
+    recommendation = models.CharField(max_length = 400)
 
     class Meta:
         db_table = 'specific_practice'
 
 
-"""This table contains the information regarding general practices, which are related to global levels of performance and are used to describe briefly the behaviour of a PYME in a given level."""
 class GeneralPractice(models.Model):
-    """name refers to the name of the respective generl practice level"""
+    """This model saves GeneralPractice instances information.
+
+    This table contains the information regarding general practices, which are related to global levels of 
+    performance and are used to describe briefly the behaviour of a PYME in a given level.
+    
+    Fields:
+        name (models.CharField): refers to the name of the respective general practice level. Maximum is 40 characters.
+        score (models.IntegerField): is the level of overall logistic performance this specific practive is related to,
+            it is a number between 0 and 5.
+        description (models.CharField): is a text field which contains a brief explanations of a particular general practice.
+            Maximum is 500 characters.
+        recommendation (models.CharField): is a text which tells you how to achieve the level of this general practice.
+            Maximum is 500 characters.
+
+    """
     name = models.CharField(max_length=40, default=' ')
-    """Score is the level of overall logistic performance this specific practive is related to, it is a number between 0 and 5."""
     score = models.IntegerField(choices=VALID_SCORES)
-    """Description is a text field which contains a brief explanations of a particular general practice."""
     description = models.CharField(max_length = 500)
-    """Recommendation is a text which tells you how to achieve the level of this general practice."""
     recommendation = models.CharField(max_length = 500)
 
     class Meta:
@@ -168,7 +260,17 @@ class GeneralPractice(models.Model):
 
 
 class Archive(models.Model):
-    """The class Archive is for making an Archive table in MariaDB, the fields are: pyme_id refers to the autogenerated id of the pyme, file_object is a voluntary file that themanager can attach, file_type is the type of the file to be attach, file_name is the name of the file to attach"""
+    """This model saves important information for each file.
+
+    The class Archive is for making an Archive table in MariaDB.
+
+    Fields:
+        pyme_id (models.ForeignKey): refers to the the pyme owner of this Archive instance.
+        file_object (models.FileField): is a file that the manager can attach.
+        file_type (models.CharField): is the type of the file attached. Maximum is 10 characters.
+        file_name (models.CharField): is the name of the file attached. Maximum is 10 characters.
+
+    """
     pyme_id = models.ForeignKey(PYME,on_delete=models.CASCADE)
     file_object = models.FileField()
     file_type = models.CharField(max_length=10)
@@ -179,7 +281,31 @@ class Archive(models.Model):
 
 
 class FinancesInformation(models.Model):
-    """The class FinancesInformation is for making a finances information table in MariaDB, the filds are: pyme_id is the autogenerated id of a pyme, employees_number is the number of current imployees in the company, anual_income is the anual income of a company in Colombian pesos, assets are the assets of the company in Colombian pesos, liabilities are the liabilities of the company in Colombian pesos, monthly_production is the monthly production of the company in units or Colombian pesos, productive_configuration is the productive configuration of the company, inventory_politics are the inventory politics of the company, main_product is the main product the company sells, main_competidor is the main competidor of the company, patrimony is the patrimony of the company in Colombian pesos, sales_income is the sales income of the company in Colombian pesos, gross_profits are the gross profit of the company in Colombian pesos, net_profits are the net profits of the company in Colombian pesos, fixed_costs_expences are the fixed cost and expenses of the company, variable_costs_expences are the variable costs and expences of the company, ebitda is the EBITDA of the company"""
+    """Saves finances information for each PYME registered.
+
+    The class FinancesInformation is for making a finances information table in MariaDB. This hols general finances information
+    for each PYME registered, and is mandatory that each PYME has at least one instance of this model.
+
+    Fields:
+        pyme_id (models.ForeignKey): is the PYME for whom this information belongs.
+        employees_number (models.IntegerField): is the number of current employees in the company.
+        anual_income (models.BigIntegerField): is the anual income of a company in Colombian pesos.
+        assets (models.BigIntegerFields): are the assets of the company in Colombian pesos.
+        liabilities (models.IntegerField): are the liabilities of the company in Colombian pesos.
+        monthly_production (models.BigIntegerField): is the monthly production of the company in units or Colombian pesos.
+        productive_configuration (models.CharField): is the productive configuration of the company. Maximum is 300 characters.
+        inventory_politics (models.CharField): are the inventory politics of the company. Maximum is 100 characters.
+        main_product (models.CharField): is the main product the company sells. Maximum is 30 characters.
+        main_competidor (models.CharField): is the main competidor of the company. Maximum is 30 characters.
+        patrimony (models.BigIntegerField): is the patrimony of the company in Colombian pesos.
+        sales_income (models.BigIntegerField): is the sales income of the company in Colombian pesos.
+        gross_profits (models.BigIntegerField): are the gross profit of the company in Colombian pesos.
+        net_profits (models.BigIntegerField): are the net profits of the company in Colombian pesos.
+        fixed_costs_expences (models.BigIntegerField): are the fixed cost and expenses of the company
+        variable_costs_expences (models.BigIntegerField): are the variable costs and expences of the company.
+        ebitda (models.IntegerField):is the EBITDA of the company
+
+    """
     pyme_id = models.ForeignKey(PYME,on_delete=models.CASCADE)
     employees_number = models.IntegerField()
     anual_income = models.BigIntegerField()

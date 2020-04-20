@@ -1,3 +1,4 @@
+import decimal
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
@@ -5,13 +6,23 @@ from django.utils import timezone
 from .general_use_functions import *
 from .models import Answer, Autoevaluation, Process, Macroprocess
 
-import decimal
 
 
-
-""" Signal to update scores of the respective macroprocess in Autoevaluation instance each time an answer is created. When users is implemented, this should be used to get the actual current Autoevaluation instance."""
 @receiver(post_save, sender=Answer)
 def update_mps_on_autevaluation(sender, instance, **kwargs):
+    """When a Answer is created by the user, this signal recalculates its Autoevaluation instance's macroprocess score.
+
+    Signal to update score of its respective macroprocess in Autoevaluation instance each time an answer is created.
+
+    Args:
+        sender (Model): model which activates this signal.
+        instance (Answer): instance whose save method activated this signal. Its model attributes may be accessed.
+        **kwargs (dictionary): other parameters.
+
+    Returns:
+        Nothing.
+
+    """
     # The autoevaluation to which 'instance' belongs
     autoevaluation = Autoevaluation.objects.get(id=instance.autoevaluation_id.id)
     # The list of answers belonging to a Process that belongs to the same Macroprocess as 'instance' that have been answered in the current autevaluation.
@@ -70,15 +81,41 @@ def update_mps_on_autevaluation(sender, instance, **kwargs):
 
     autoevaluation.save()
 
-""" Signal to delete entries of Answer, when a new Answer corresponding to the same process is created. """
 @receiver(pre_save, sender=Answer)
 def update_answer(sender, instance, **kwargs):
+    """Updates a Answer instance with a new score.
+
+    When the user creates an Answer instance to a Process instance that had already an Answer instance in the
+    user's current Autoevaluation instance, this signal deletes previous answer, so each process only has one
+    instance of Answer per autoevaluation.
+
+    Args:
+        sender (Model): model which activates this signal.
+        instance (Answer): instance whose save method activated this signal. Its model attributes may be accessed.
+        kwargs (dictionary): other attributes may be passed.
+
+    Returns:
+        Nothing.
+
+    """
     autoevaluation = Autoevaluation.objects.get(pk=instance.autoevaluation_id.id)
     Answer.objects.filter(autoevaluation_id=autoevaluation.id, process_id=instance.process_id.id).delete()
 
-""" Signal to update last_time_edition filed in Autoevaluation instance when an Answer is created. I.e. when the autoevaluation is edited."""
 @receiver(post_save, sender=Answer)
 def update_autoevaluation_last_edition(sender, instance, **kwargs):
+    """Updates the last_edition field in Answer instance's autoevaluation.
+
+    Signal to update last_time_edition filed in Autoevaluation instance when an Answer is created. I.e. when the autoevaluation is edited.
+
+    Attributes:
+        sender (Model): model whose save() method activates this signal.
+        instance (Answer): instance whose save method activated this signal. Its model attributes may be accessed.
+        kwargs (dictionary): other attributes may be passed.
+
+    Returns:
+        Nothing.
+
+    """
     autoevaluation = Autoevaluation.objects.get(pk=instance.autoevaluation_id.id)
     autoevaluation.last_time_edition = timezone.now()
     autoevaluation.save()

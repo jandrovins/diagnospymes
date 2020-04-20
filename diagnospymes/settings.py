@@ -122,9 +122,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
-
 STATIC_URL = '/static/'
 
 # When a user logs in or logs out, redirect to home page
 LOGIN_REDIRECT_URL = '/'
+
+# When a user is requested to login in order to access a page, redirect to /login
 LOGIN_URL = '/login'

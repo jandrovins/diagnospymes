@@ -1,3 +1,13 @@
+"""Script to populate Diagnospymes database.
+
+This script takes information from [1] in order to create all instances needed for models:
+Macroprocess, Process, and SpecificPractices.
+
+This should be run after migrating from models into database.
+
+[1] Márquez-Gutiérrez, Mateo. Carmona-González, GuillermoL. Castro-Zuluaga, Carlos. A. SFLMM V1.1: Small Firm Logistics Maturity Model Version 1.1. Universidad EAFIT.
+"""
+
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE','diagnospymes.settings')
 import django
