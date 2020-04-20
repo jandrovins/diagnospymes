@@ -11,7 +11,7 @@
             {% for process in macroprocess.process_set.all %}
 
             <li>{{ process.guiding_question }}</li>
-            <p>Puntuación:</p>
+            <p>Puntuación por nivel de madurez:</p>
             <input type="range" min="0" max="5" value="2" class="slider" id="range" name="score_{{ process.id }}">
             {% endfor %}
         </ol>
