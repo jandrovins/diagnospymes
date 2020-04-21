@@ -37,20 +37,10 @@
 
 <div class="pagination">
     <span class="step-links">
-        {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}">Retroceder al anterior</a>
-        {% endif %}
-
-        <span class="current">
-            Macroproceso {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
-        </span>
-
-        {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">Avanzar al siguiente</a>
-        {% else %}
+        {% bootstrap_pagination page_obj url="?page=1" size="large" %}
         {% if is_autoevaluation_filled %}
+        {% bootstrap_pagination page_obj url="?page=1" size="large" %}
         <a href = "{% url 'mm_evaluation:autoevaluation_result' autoevaluation.id %}">Terminar de evaluar y ver resultados. ADVERTENCIA: no podrá editar los puntajes que ha seleccionado en esta autoevaluación.</a>
-        {% endif %}
         {% endif %}
     </span>
 </div>
