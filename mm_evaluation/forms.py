@@ -13,8 +13,8 @@ class PYMERegistrationForm(forms.ModelForm):
     except for User field, which will be managed using UserRegistrationForm. This localizes `contact_birth_date`. 
 
     Fields:
-        pyme_name (forms.CharField):
-        sector_id (forms.ModelChoiceField): displays with a select widget.
+        name (forms.CharField):
+        sector (forms.ModelChoiceField): displays with a select widget.
         nit (forms.CharField):
         address (forms.CharField):
         phone_number (forms.CharField):
@@ -36,8 +36,8 @@ class PYMERegistrationForm(forms.ModelForm):
         localized_fields = ('contact_birth_date',)
         # Specify labels for each field
         labels = {
-            'pyme_name': _('Nombre de la empresa'),
-            'sector_id': _('Nombre del sector económico al cual pertenece la empresa'),
+            'name': _('Nombre de la empresa'),
+            'sector': _('Nombre del sector económico al cual pertenece la empresa'),
             'nit': _('NIT de la empresa'),
             'address': _('Dirección de la empresa'),
             'phone_number': _('Número telefónico de la empresa'),

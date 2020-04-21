@@ -71,10 +71,10 @@ class AutoevaluationView(LoginRequiredMixin, ListView):
                 to access.
 
         Returns:
-            A boolean, indicating whether the user.pyme object equals autoevaluation.pyme_id.
+            A boolean, indicating whether the user.pyme object equals autoevaluation.pyme.
 
         """
-        return user.pyme == autoevaluation.pyme_id
+        return user.pyme == autoevaluation.pyme
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -110,7 +110,7 @@ class AutoevaluationView(LoginRequiredMixin, ListView):
         if not self.test_user_owns_autoevaluation(request.user, autoevaluation):
             return redirect(reverse('mm_evaluation:denied_access'))
         process = get_object_or_404(Process, pk=process_id)
-        answer = Answer(autoevaluation_id=autoevaluation, process_id=process, score=request.POST['score'])
+        answer = Answer(autoevaluation=autoevaluation, process=process, score=request.POST['score'])
         autoevaluation.last_time_edition = timezone.now()
         autoevaluation.save()
         answer.save()
@@ -172,7 +172,7 @@ class PreviousResults(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         self.pyme = get_object_or_404(PYME, user=self.request.user)
-        return Autoevaluation.objects.filter(pyme_id=self.pyme).order_by('last_time_edition')
+        return Autoevaluation.objects.filter(pyme=self.pyme).order_by('last_time_edition')
 
       
 class ResultDetail(LoginRequiredMixin, DetailView):
@@ -213,7 +213,7 @@ class ResultDetail(LoginRequiredMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         response_class = super().get(request, *args, **kwargs)
-        if not request.user.pyme == self.autoevaluation.pyme_id:
+        if not request.user.pyme == self.autoevaluation.pyme:
             return redirect(reverse('mm_evaluation:denied_access'))
         return response_class
 

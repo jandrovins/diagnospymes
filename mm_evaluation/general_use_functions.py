@@ -19,14 +19,14 @@ def is_autoevaluation_filled(a):
         return True
     return False
 
-def get_autoevaluation(pyme_id):
+def get_autoevaluation(pyme):
     """Returns the last autoevaluation not completed for a given PYME, or a new one.
 
     Finds the first created Autoevaluation instance that has not been completed. If all are completed,
     it will create a new Autoevaluation instance to the PYME passed as argument, and return it.
 
     Args:
-        pyme_id (PYME): model PYME instance.
+        pyme (PYME): model PYME instance.
 
     Returns:
         An Autoevaluation instance.
@@ -34,30 +34,30 @@ def get_autoevaluation(pyme_id):
     """
 
     # PYME's object autoevaluations, ordered increasingly by start time
-    autoevaluations_list = Autoevaluation.objects.filter(pyme_id=pyme_id).order_by('start_time')
+    autoevaluations_list = Autoevaluation.objects.filter(pyme=pyme).order_by('start_time')
     for autoevaluation in autoevaluations_list:
         if not is_autoevaluation_filled(autoevaluation):
             return autoevaluation
     # If all existing autoevaluations are completed, create a new one and return it
-    return Autoevaluation(pyme_id=get_object_or_404(PYME, pk=pyme_id),
+    return Autoevaluation(pyme=get_object_or_404(PYME, pk=pyme),
             start_time=timezone.now(),
             last_time_edition=timezone.now()
             )
 
-def get_last_full_autoevaluation(pyme_id):
+def get_last_full_autoevaluation(pyme):
     """Returns the last full autoevaluation.
 
     This function returns the last created and completed Autoevaluation instance that belongs to the PYME instance passed as argument.
 
     Args:
-        pyme_id (PYME): model PYME instance.
+        pyme (PYME): model PYME instance.
 
     Returns:
         None if there is no completed autoevaluation.
 
     """
     # PYME's object autoevaluations, order increasingly by start time
-    autoevaluation_list = Autoevaluation.objects.filter(pyme_id=pyme_id).order_by('start_time')
+    autoevaluation_list = Autoevaluation.objects.filter(pyme=pyme).order_by('start_time')
     full_autoevaluation = None
     for autoevaluation in autoevaluation_list:
         if is_autoevaluation_filled(autoevaluation):

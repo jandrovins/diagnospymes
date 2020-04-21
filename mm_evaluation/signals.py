@@ -98,14 +98,11 @@ def update_answer(sender, instance, **kwargs):
         Nothing.
 
     """
-    autoevaluation = Autoevaluation.objects.get(pk=instance.autoevaluation_id.id)
-    Answer.objects.filter(autoevaluation_id=autoevaluation.id, process_id=instance.process_id.id).delete()
+    autoevaluation = Autoevaluation.objects.get(pk=instance.autoevaluation.id)
+    Answer.objects.filter(autoevaluation=autoevaluation.id, process=instance.process.id).delete()
 
 @receiver(post_save, sender=Answer)
 def update_autoevaluation_last_edition(sender, instance, **kwargs):
-<<<<<<< HEAD
-    autoevaluation = Autoevaluation.objects.get(pk=instance.autoevaluation.id)
-=======
     """Updates the last_edition field in Answer instance's autoevaluation.
 
     Signal to update last_time_edition filed in Autoevaluation instance when an Answer is created. I.e. when the autoevaluation is edited.
@@ -119,7 +116,6 @@ def update_autoevaluation_last_edition(sender, instance, **kwargs):
         Nothing.
 
     """
-    autoevaluation = Autoevaluation.objects.get(pk=instance.autoevaluation_id.id)
->>>>>>> 8a755afdac97ed0b289b0162ad5be8faeec8f314
+    autoevaluation = Autoevaluation.objects.get(pk=instance.autoevaluation.id)
     autoevaluation.last_time_edition = timezone.now()
     autoevaluation.save()

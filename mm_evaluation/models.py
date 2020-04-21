@@ -3,12 +3,12 @@ from django.db import models
 
 
 VALID_SCORES = [
-        (0, 'zero'),
-        (1, 'one'),
-        (2, 'two'),
-        (3, 'three'),
-        (4, 'four'),
-        (5, 'five'),
+        (0, 0),
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5),
         ]
 """Valid scores for answer instances."""
 
@@ -90,7 +90,7 @@ class PYME(models.Model):
     contact_id_number           = models.CharField(max_length=15)
     contact_time_on_charge      = models.IntegerField()
     contact_education_level     = models.CharField(max_length=40,choices=VALID_EDUCATION_LEVEL)
-    pyme                        = models.CharField(max_length=100)
+    name                        = models.CharField(max_length=100)
     sector                      = models.ForeignKey(Sector, on_delete=models.CASCADE)
     nit                         = models.CharField(max_length=30)
     address                     = models.CharField(max_length=50)
@@ -286,13 +286,13 @@ class Archive(models.Model):
         pyme (models.ForeignKey): refers to the the pyme owner of this Archive instance.
         file_object (models.FileField): is a file that the manager can attach.
         file_type (models.CharField): is the type of the file attached. Maximum is 10 characters.
-        name (models.CharField): is the name of the file attached. Maximum is 10 characters.
+        name (models.CharField): is the name of the file attached. Maximum is 40 characters.
 
     """
     pyme        = models.ForeignKey(PYME,on_delete=models.CASCADE)
     file_object = models.FileField()
     file_type   = models.CharField(max_length=10)
-    name   = models.CharField(max_length=40)
+    name        = models.CharField(max_length=40)
 
     def __str__(self):
         return 'File with name {} created by {}'.format(self.name, self.pyme.name)
