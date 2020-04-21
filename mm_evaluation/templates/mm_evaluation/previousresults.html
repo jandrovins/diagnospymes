@@ -5,10 +5,10 @@
 <body style="background-color:honeydew;">
     <h1>Resultados</h1>
     <ul>
-      {% if all_previous_results %}
-         {% for autoevaluation in all_previous_results %}
-           <li> <a href="{% url 'mm_evaluation:autoevaluation_result' autoevaluation.id %}">{{ autoevaluation.last_time_edition }}</a></li>
-           {% endfor %}
-      {% endif %}
+        {% if all_previous_results %}
+        {% for autoevaluation in all_previous_results %}
+            <li> <a href="{% url 'mm_evaluation:autoevaluation_result' autoevaluation.id %}">{{ autoevaluation.last_time_edition }}</a></li>
+        {% endfor %}
+        {% endif %}
     </ul>
 </body>
