@@ -124,16 +124,6 @@ class AutoevaluationView(LoginRequiredMixin, ListView):
         else:
             return HttpResponseRedirect(reverse_lazy('mm_evaluation:autoevaluation', args=(autoevaluation.id,))+'?page='+str(answer.process.macroprocess.number))
 
-
-
-
-class ProcessAlreadyAnswerView(LoginRequiredMixin, TemplateView):
-    # For use in LoginRequiredMixin
-    login_url = reverse_lazy('mm_evaluation:login')
-    permission_denied_message = "Debes ingresar a tu cuenta para acceder a esta sección."
-
-    template_name = 'mm_evaluation/process_already_answer.html'
-
 class IndexView(View):
     template_name = 'mm_evaluation/index.html'
     context_object_name = 'general_list'
