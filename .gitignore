@@ -61,8 +61,6 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
-# ignore migrations
-mm_evaluation/migrations
 
 # Flask stuff:
 instance/
@@ -130,3 +128,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Ignore migrations
+mm_evaluation/migrations
+
+# Ignore bootstrap-slider source code
+mm_evaluation/static/mm_evaluation/js/bootstrap-slider.js
+mm_evaluation/static/mm_evaluation/css/bootstrap-slider.css
