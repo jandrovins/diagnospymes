@@ -119,8 +119,10 @@ class AutoevaluationView(LoginRequiredMixin, ListView):
                 if score != '':
                     answer = Answer(autoevaluation=autoevaluation, process=Process.objects.get(id=int(key.split('_')[1])), score=score)
                     answer.save()
-        
-        return HttpResponseRedirect(reverse_lazy('mm_evaluation:autoevaluation', args=(autoevaluation.id,))+'?page='+str(answer.process.macroprocess.number))
+        if answer.process.macroprocess.number == 10:
+            return HttpResponseRedirect(reverse_lazy('mm_evaluation:autoevaluation_result', args=(autoevaluation.id,)))
+        else:
+            return HttpResponseRedirect(reverse_lazy('mm_evaluation:autoevaluation', args=(autoevaluation.id,))+'?page='+str(answer.process.macroprocess.number))
 
 
 

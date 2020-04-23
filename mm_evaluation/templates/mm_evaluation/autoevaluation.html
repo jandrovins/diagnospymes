@@ -1,4 +1,6 @@
 {% load bootstrap4 %}
+{% load fontawesome_5 %}
+{% load static %}
 
 {# Load CSS and JavaScript #}
 {% bootstrap_css %}
@@ -9,38 +11,76 @@
 
 <head>
     {% block title %}<title>Autoevaluación</title>{% endblock %}
-</head>
-<body style="background-color:honeydew;">
     <h1>Autoevaluación</h1>
+</head>
+
+<body style="background-color:honeydew;">
+
+    <link rel="stylesheet" href="{% static 'mm_evaluation/css/bootstrap-slider.css' %}">
+    <script type="text/javascript" src="{% static 'mm_evaluation/js/bootstrap-slider.js' %}"></script>
+
     <form action="{% url 'mm_evaluation:save_answer' autoevaluation.id %}" method="post">
         {% csrf_token %}
         {% for macroprocess in macroprocesses_list %}
-        <h2>{{macroprocess.number }}. {{ macroprocess.name }}</h2>
-        <ol>
-            {% for process in macroprocess.process_set.all %}
+            <h2>{{macroprocess.number }}. {{ macroprocess.name }}</h2>
+            <ul>
+                {% for process in macroprocess.process_set.all %}
 
-            <li>{{ process.guiding_question }}</li>
-            <p>Puntuación por nivel de madurez:</p>
-            <input type="range" min="0" max="5" value="2" class="slider" id="range" name="score_{{ process.id }}">
-            {% endfor %}
-        </ol>
+                    <li>{{ process.guiding_question }}</li>
+                    <p>Puntuación por nivel de madurez:</p>
+                    <input
+                        type="text"
+                        name="score_{{ process.id }}"
+                        data-provide="slider"
+                        data-slider-ticks="[0, 1, 2, 3, 4, 5]"
+                        data-slider-ticks-tooltip="true"
+                        data-slider-min="0"
+                        data-slider-max="5"
+                        data-slider-step="1"
+                        data-slider-value="2"
+                        data-slider-tooltip="show"
+                    >
+                    <br>
+                    <div id = "test" style="margin-top: 2px; margin-left: -17px;  position: absolute;">
+                        {% fa5_icon 'frown' size='fa-2x' color='red' %}
+                    </div>
+                    <div id = "test" style="margin-top: 2px; margin-left: 26;  position: absolute;">
+                        {% fa5_icon 'frown-open' size='fa-2x' color='orange' %}
+                    </div>
+                    <div id = "test" style="margin-top: 2px; margin-left: 68px;  position: absolute;">
+                        {% fa5_icon 'meh' size='fa-2x' color='vin' %}
+                    </div>
+                    <div id = "test" style="margin-top: 2px; margin-left: 110px;  position: absolute;">
+                        {% fa5_icon 'meh-rolling-eyes' size='fa-2x' color='yellow' %}
+                    </div>
+                    <div id = "test" style="margin-top: 2px; margin-left: 151px;  position: absolute;">
+                        {% fa5_icon 'smile-beam' size='fa-2x' color='teal' %}
+                    </div>
+                    <div id = "test" style="margin-top: 2px; margin-left: 194px;  position: relative;">
+                        {% fa5_icon 'laugh-beam' size='fa-2x' color='green' %}
+                    </div>
+
+                {% endfor %}
+            </ul>
+
         {% endfor %}
         
         {% buttons %}
             <button type="submit" class="btn btn-primary">
+        {% if page_obj.number == 10 %}
+              Guardar y terminar
+        {% else %}
               Guardar
+        {% endif %}
             </button>
         {% endbuttons %}
     </form>
+    {% fontawesome_5_static %}
 </body>
 
 
 <div class="pagination">
     <span class="step-links">
         {% bootstrap_pagination page_obj url="?page=1" size="large" %}
-        {% if is_autoevaluation_filled %}
-        {% bootstrap_pagination page_obj url="?page=1" size="large" %}
-        <a href = "{% url 'mm_evaluation:autoevaluation_result' autoevaluation.id %}">Terminar de evaluar y ver resultados. ADVERTENCIA: no podrá editar los puntajes que ha seleccionado en esta autoevaluación.</a>
-        {% endif %}
     </span>
 </div>
