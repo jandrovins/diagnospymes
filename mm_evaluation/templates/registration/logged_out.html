@@ -1,9 +1,23 @@
+{% extends 'mm_evaluation/base.html' %}
+
+<head>
+    {% load bootstrap4 %}
+    {% load static %}
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
+    {# Display django.contrib.messages as Bootstrap alerts #}
+    {% bootstrap_messages %}
+</head>
+
+
 {% block content %}
-  <div class="container">
-      <div class="row justify-content-center align-items-center" style="height:80vh;">
-          <div class="col-auto border p-3">
-              Has salido de tu cuenta con éxito.
-          </div>
-      </div>
-  </div>
+<div class="container">
+    <div class="row justify-content-center align-items-center" style="height:80vh;">
+        <div class="col-auto border p-3">
+            <h2>Has salido de tu cuenta con éxito.</h2>
+            <a href="{% url 'mm_evaluation:index' %}">Volver a página principal.</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

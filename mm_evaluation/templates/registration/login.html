@@ -1,29 +1,39 @@
-{% if form.errors %}
-<p>Tu usuario o tu contraseña son incorrectos. Intenta de nuevo.</p>
-{% endif %}
+{% extends 'mm_evaluation/base.html' %}
 
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Tu cuenta no tiene acceso a esta página,
-    por favor acceda con una cuenta que lo tenga.</p>
-    {% else %}
-    <p>Por favor, ingrese con su cuenta para ver esta página.</p>
+<head>
+    {% load bootstrap4 %}
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
+    {# Display django.contrib.messages as Bootstrap alerts #}
+    {% bootstrap_messages %}
+</head>
+
+{% block content %}
+<div class='content'>
+    {% block title %}<title>Login</title>{% endblock %}
+    {% if form.errors %}
+    {% bootstrap_alert "Tu usuario o tu contraseña son <strong>incorrectos</strong>, por favor intenta de nuevo." alert_type='danger' %}
     {% endif %}
-{% endif %}
 
-<form method="post" action="{% url 'mm_evaluation:login' %}">
-{% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
+    {% if next %}
+    {% if user.is_authenticated %}
+    {% bootstrap_alert "Tu cuenta no tiene acceso a esta página, por favor acceda con una cuenta que lo tenga." alert_type='danger' %}
+    {% else %}
+    {% bootstrap_alert "Ingresa con tu cuenta para ver esta página." alert_type='danger' %}
+    {% endif %}
+    {% endif %}
 
-<input type="submit" value="login">
-<input type="hidden" name="next" value="{{ next }}">
-</form>
+    <h1>Login</h1>
+
+    <form method="post" action="{% url 'mm_evaluation:login' %}">
+        {% csrf_token %}
+        {% bootstrap_field form.username show_label=False field_class='col-md-4' %}
+        {% bootstrap_field form.password show_label=False field_class='col-md-4' %}
+
+        {% bootstrap_button content='Ingresar' %}
+        <a class="btn btn-primary" href="{% url 'mm_evaluation:password_change' %}" role="button">Olvidé mi contraseña</a>
+        <input type="hidden" name="next" value="{{ next }}">
+    </form>
+</div>
+{% endblock %}
