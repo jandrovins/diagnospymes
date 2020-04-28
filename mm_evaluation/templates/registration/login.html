@@ -32,7 +32,6 @@
         {% bootstrap_field form.password show_label=False field_class='col-md-4' %}
 
         {% bootstrap_button content='Ingresar' %}
-        <a class="btn btn-primary" href="{% url 'mm_evaluation:password_change' %}" role="button">Olvidé mi contraseña</a>
         <input type="hidden" name="next" value="{{ next }}">
     </form>
 </div>
