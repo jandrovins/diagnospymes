@@ -1,86 +1,97 @@
-{% load bootstrap4 %}
-{% load fontawesome_5 %}
-{% load static %}
-
-{# Load CSS and JavaScript #}
-{% bootstrap_css %}
-{% bootstrap_javascript jquery='full' %}
-
-{# Display django.contrib.messages as Bootstrap alerts #}
-{% bootstrap_messages %}
+{% extends 'mm_evaluation/base.html' %}
 
 <head>
-    {% block title %}<title>Autoevaluación</title>{% endblock %}
+    {% load bootstrap4 %}
+    {% load fontawesome_5 %}
+    {% load static %}
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
+    {# Display django.contrib.messages as Bootstrap alerts #}
+    {% bootstrap_messages %}
     <h1>Autoevaluación</h1>
 </head>
 
-<body style="background-color:honeydew;">
 
-    <link rel="stylesheet" href="{% static 'mm_evaluation/css/bootstrap-slider.css' %}">
-    <script type="text/javascript" src="{% static 'mm_evaluation/js/bootstrap-slider.js' %}"></script>
+{% block content %}
+{% block title %}<title>Autoevaluación</title>{% endblock %}
 
-    <form action="{% url 'mm_evaluation:save_answer' autoevaluation.id %}" method="post">
-        {% csrf_token %}
-        {% for macroprocess in macroprocesses_list %}
-            <h2>{{macroprocess.number }}. {{ macroprocess.name }}</h2>
-            <ul>
-                {% for process in macroprocess.process_set.all %}
+<div class="content">
+    <body style="background-color:honeydew;">
+        <form action="{% url 'mm_evaluation:save_answer' autoevaluation.id %}" method="post">
+            {% csrf_token %}
+            {% for macroprocess in macroprocesses_list %}
+            <div class="mx-auto" style="width: 400px;">
+                <h1>{{macroprocess.number }}. {{ macroprocess.name }}</h1>
+            </div>
+            <div class="container">
+                <div class="row justify-content-between">
+                    {% for process in macroprocess.process_set.all %}
+                    <div class="col-md-auto h3">
+                        <h2>{{ process.id }}.</h2>
+                    </div>
+                    <div class="col-6">
+                        {{ process.guiding_question }}<br><br><br><br>
+                    </div>
+                    <div class="col-5">
+                        {% bootstrap_label "Puntuación por nivel de madurez:" label_for="slider_{{ process.id }}" %}
+                        <input
+                            type="text"
+                            id="slider_{{ process.id }}"
+                            name="score_{{ process.id }}"
+                            data-provide="slider"
+                            data-slider-ticks="[0, 1, 2, 3, 4, 5]"
+                            data-slider-ticks-tooltip="true"
+                            data-slider-min="0"
+                            data-slider-max="5"
+                            data-slider-step="1"
+                            data-slider-value="2"
+                            data-slider-tooltip="show"
+                            >
+                            <div id = "test" style="color:#ff2a00; margin-top: 2px; margin-left: -17px;  position: absolute;">
+                                {% fa5_icon 'frown' size='fa-2x' %}
+                            </div>
+                        <div id = "test" style="color:#d13111; margin-top: 2px; margin-left: 26;  position: absolute;">
+                            {% fa5_icon 'frown-open' size='fa-2x' %}
+                        </div>
+                        <div id = "test" style="color:#e37d09; margin-top: 2px; margin-left: 68px;  position: absolute;">
+                            {% fa5_icon 'meh' size='fa-2x' %}
+                        </div>
+                        <div id = "test" style="color:#bec400; margin-top: 2px; margin-left: 110px;  position: absolute;">
+                            {% fa5_icon 'meh-rolling-eyes' size='fa-2x' %}
+                        </div>
+                        <div id = "test" style="color:#0e6100; margin-top: 2px; margin-left: 151px;  position: absolute;">
+                            {% fa5_icon 'smile-beam' size='fa-2x' %}
+                        </div>
+                        <div id = "test" style="color:#1ab000; margin-top: 2px; margin-left: 194px;  position: relative;">
+                            {% fa5_icon 'laugh-beam' size='fa-2x'%}
+                        </div>
+                    </div>
+                    <div class="w-100"></div>
+                    {% endfor %}
+                </div>
+            </div>
 
-                    <li>{{ process.guiding_question }}</li>
-                    <p>Puntuación por nivel de madurez:</p>
-                    <input
-                        type="text"
-                        name="score_{{ process.id }}"
-                        data-provide="slider"
-                        data-slider-ticks="[0, 1, 2, 3, 4, 5]"
-                        data-slider-ticks-tooltip="true"
-                        data-slider-min="0"
-                        data-slider-max="5"
-                        data-slider-step="1"
-                        data-slider-value="2"
-                        data-slider-tooltip="show"
-                    >
-                    <br>
-                    <div id = "test" style="margin-top: 2px; margin-left: -17px;  position: absolute;">
-                        {% fa5_icon 'frown' size='fa-2x' color='red' %}
-                    </div>
-                    <div id = "test" style="margin-top: 2px; margin-left: 26;  position: absolute;">
-                        {% fa5_icon 'frown-open' size='fa-2x' color='orange' %}
-                    </div>
-                    <div id = "test" style="margin-top: 2px; margin-left: 68px;  position: absolute;">
-                        {% fa5_icon 'meh' size='fa-2x' color='vin' %}
-                    </div>
-                    <div id = "test" style="margin-top: 2px; margin-left: 110px;  position: absolute;">
-                        {% fa5_icon 'meh-rolling-eyes' size='fa-2x' color='yellow' %}
-                    </div>
-                    <div id = "test" style="margin-top: 2px; margin-left: 151px;  position: absolute;">
-                        {% fa5_icon 'smile-beam' size='fa-2x' color='teal' %}
-                    </div>
-                    <div id = "test" style="margin-top: 2px; margin-left: 194px;  position: relative;">
-                        {% fa5_icon 'laugh-beam' size='fa-2x' color='green' %}
-                    </div>
+            {% endfor %}
 
-                {% endfor %}
-            </ul>
-
-        {% endfor %}
-        
-        {% buttons %}
+            {% buttons %}
             <button type="submit" class="btn btn-primary">
-        {% if page_obj.number == 10 %}
-              Guardar y terminar
-        {% else %}
-              Guardar
-        {% endif %}
+                {% if page_obj.number == 10 %}
+                Guardar y terminar
+                {% else %}
+                Guardar
+                {% endif %}
             </button>
-        {% endbuttons %}
-    </form>
-    {% fontawesome_5_static %}
-</body>
+            {% endbuttons %}
+        </form>
+        {% fontawesome_5_static %}
+    </body>
 
 
-<div class="pagination">
-    <span class="step-links">
-        {% bootstrap_pagination page_obj url="?page=1" size="large" %}
-    </span>
+    <div class="pagination">
+        <span class="step-links">
+            {% bootstrap_pagination page_obj url="?page=1" size="large" %}
+        </span>
+    </div>
 </div>
+{% endblock %}
