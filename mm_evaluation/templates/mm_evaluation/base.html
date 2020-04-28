@@ -1,9 +1,6 @@
 {% load static %}
 <html lang="en">
-
     <head>
-
-
         <style>
 /* Add a black background color to the top navigation */
 .topnav {
@@ -108,19 +105,19 @@
         <script type="text/javascript" src="{% static 'mm_evaluation/js/bootstrap-slider.js' %}"></script>
         {# Display django.contrib.messages as Bootstrap alerts #}
         {% bootstrap_messages %}
-
-
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
 
     <body style="background-color:honeydew;">
-
         <div class="sidenav">
             <a href="{% url 'mm_evaluation:index' %}">Inicio</a>
             <a href="{% url 'mm_evaluation:login' %}">Login</a>
             <a href="{% url 'mm_evaluation:registration' %}">Registro</a>
             <a href="{% url 'mm_evaluation:begin_or_continue_autoevaluation' %}">Diagnosticar</a>
             <a href="{% url 'mm_evaluation:results' %}">Resultados</a>
+            <a href="{% url 'mm_evaluation:benchmarking' %}">Benchmarking</a>
+            <a href="{% url 'mm_evaluation:resources' %}">Recursos</a>
+            <a href="{% url 'mm_evaluation:us' %}">Acerca de nosotros</a>
             <a href="{% url 'mm_evaluation:password_change' %}">Cambiar contraseña</a>
             <a href="{% url 'mm_evaluation:logout' %}">Logout</a>
         </div>
@@ -131,6 +128,4 @@
             </div>
         </div>
     </body>
-
 </html>
-

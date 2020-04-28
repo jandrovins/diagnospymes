@@ -1,0 +1,29 @@
+{% extends 'mm_evaluation/base.html' %}
+
+<head>
+    {% load bootstrap4 %}
+    {% load fontawesome_5 %}
+    {% load static %}
+    {# Display django.contrib.messages as Bootstrap alerts #}
+    {% bootstrap_messages %}
+    {% block title %}<title>Benchmarking</title>{% endblock%}
+</head>
+
+
+{% block content %}
+<div class="content">
+    <body style="background-color:honeydew;">
+        <h1>Benchmarking</h1>
+        <ul>
+            {% if all_previous_results %}
+            {% for autoevaluation in all_previous_results %}
+            <strong>{{ autoevaluation.last_time_edition }}:</strong>
+            <li> <a href="{% url 'mm_evaluation:benchmarkingTop' autoevaluation.id %}">Comparar contra el mejor</a></li>
+            <li> <a href="{% url 'mm_evaluation:benchmarkingAverage' autoevaluation.id %}">Comparar contra el promedio</a></li>
+            <li> <a href="{% url 'mm_evaluation:benchmarkingBottom' autoevaluation.id %}">Comparar contra el peor</a></li>
+            {% endfor %}
+            {% endif %}
+        </ul>
+    </body>
+</div>
+{% endblock %}

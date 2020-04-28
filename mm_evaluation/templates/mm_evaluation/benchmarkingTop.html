@@ -1,0 +1,33 @@
+{% extends 'mm_evaluation/base.html' %}
+
+<head>
+    {% load bootstrap4 %}
+    {% load fontawesome_5 %}
+    {% load static %}
+    {% bootstrap_messages %}
+</head>
+
+
+{% block content %}
+{% block title %}<title>Benchmarking</title>{% endblock%}
+<div class="content">
+    <body style="background-color:honeydew;">
+        <style>
+p {
+    font-size: 150%;
+    font-family: fantasy;
+    color: blue;
+}
+        </style>
+        <h1>{{autoevaluation.last_time_edition}}</h1>
+        <h2>{{ text }}</h2>
+        <h3>Tu puntaje fue de {{mine}}</h3>
+        <h4>El {{ type }} puntaje fue de {{ total }}</h4>
+    </body>
+    {% if graph %}
+    <div style="width:600;height:500">
+        {{ graph|safe }}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

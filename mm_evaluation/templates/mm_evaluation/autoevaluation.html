@@ -3,19 +3,13 @@
 <head>
     {% load bootstrap4 %}
     {% load fontawesome_5 %}
-    {% load static %}
-    {# Load CSS and JavaScript #}
-    {% bootstrap_css %}
-    {% bootstrap_javascript jquery='full' %}
     {# Display django.contrib.messages as Bootstrap alerts #}
     {% bootstrap_messages %}
-    <h1>Autoevaluación</h1>
 </head>
 
 
 {% block content %}
 {% block title %}<title>Autoevaluación</title>{% endblock %}
-
 <div class="content">
     <body style="background-color:honeydew;">
         <form action="{% url 'mm_evaluation:save_answer' autoevaluation.id %}" method="post">
@@ -86,8 +80,6 @@
         </form>
         {% fontawesome_5_static %}
     </body>
-
-
     <div class="pagination">
         <span class="step-links">
             {% bootstrap_pagination page_obj url="?page=1" size="large" %}

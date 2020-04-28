@@ -1,142 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'mm_evaluation/base.html' %}
 
-    <head>
-        {% block title %}<title>DiagnosPYMES</title>{% endblock %}
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <style>
-/* Add a black background color to the top navigation */
-.topnav {
-    background-color: #4CAF50;
-    overflow: hidden;
-    margin-left: 180px;
-}
+<head>
+    {% load bootstrap4 %}
+    {% load static %}
+    {# Display django.contrib.messages as Bootstrap alerts #}
+    {% bootstrap_messages %}
+</head>
 
-     .topnav a {
-         float: left;
-         color: #f2f2f2;
-         text-align: center;
-         padding: 14px 16px;
-         text-decoration: none;
-         font-size: 17px;
-     }
 
-     .topnav a:hover {
-         background-color: #C6E170;
-         color: black;
-     }
+{% block content %}
+<body style="background-color:honeydew;">
 
-     .topnav a.active {
-         background-color: #1C344E;
-         color: ;
-     }
+    <div class="main">
+        <h1>DiagnosPYMES</h1>
+    </div>
+    <div class="topnav">
+        <a href="/nosotros/">¿Quienes somos?</a>
+        <a href="/mision/">Mision</a>
+        <a href="/vision/">Vision</a>
+        <a href="/metodologia/">Metodología</a>
+        <a href="/requisitos/">Requisitos</a>
+        <a href="/instrucciones/">Instructivo</a>
+    </div>
+    <div class="content">
+        <h2>Recursos<br><br></h2>
+        <div class="row">
+            <div class="col-2">
+                <span class="border w-100 p-3 border-white" style="background-color:#8eff6b">
+                    <a href="https://en.wikipedia.org/wiki/Maturity_model" target="_blank">Maturity Model</a>
+                </span>
+            </div>
+            <div class="col-4">
 
-     .sidenav {
-         height: 100%;
-         width: 180px;
-         position: fixed;
-         z-index: 1;
-         top: 0;
-         left: 0;
-         background-color: #C6E170;
-         overflow-x: hidden;
-         padding-top: 20px;
-     }
-
-     .sidenav a {
-         padding: 6px 8px 6px 16px;
-         text-decoration: none;
-         font-size: 25px;
-         color: white;
-         display: block;
-     }
-
-     .sidenav a:hover {
-         color: #92C46D;
-     }
-
-     @media screen and (max-height: 450px) {
-         .sidenav {padding-top: 15px;}
-         .sidenav a {font-size: 18px;}
-     }
-
-     .main {
-         margin-left: 180px; /* Same as the width of the sidenav */
-         font-size: 28px; /* Increased text to enable scrolling */
-         padding: 0px 10px;
-     }
-
-     .main h1 {
-         color: lightseagreen;
-         font-family: impact;
-         font-size: 200%;
-
-     }
-
-     .content {
-         margin-left: 180px;
-     }
-
-     .content h2 {
-         color: lightseagreen;
-         font-family: impact;
-         font-size: 150%;
-
-     }
-
-     .content p {
-         color: black;
-         font-family: candara;
-         font-size: 100%;
-     }
-
-     .content a {
-         color: blue;
-         font-family: candara;
-         font-size: 100%;
-         background-color: #C6E170;
-         overflow-x: hidden;
-         padding-top: 20px;
-         padding-bottom: 20px;
-         padding-left: 20px;
-         padding-right: 20px;
-     }
-
-     .content a:hover {
-         color: #92C46D;
-
-     }
-
-        </style>
-    </head>
-
-    <body style="background-color:honeydew;">
-
-        <div class="sidenav">
-            <a href="/nosotros/">Inicio</a>
-            <a href="#">Registro</a>
-            <a href="/empezar_o_continuar_autoevaluacion/">Diagnóstico</a>
-            <a href="">Recursos</a>
-            <a href="#">Acerca de</a>
+                <span class="border w-100 p-3 border-white" style="background-color:#8eff6b">
+                    <a href="https://www.youtube.com/watch?v=SB-qEYVdvXA" target="_blank">Cute Kittens</a>
+                </span>
+            </div>
         </div>
-        <div class="main">
-            <h1>DiagnosPYMES</h1>
-        </div>
-        <div class="topnav">
-            <a href="/nosotros/">¿Quienes somos?</a>
-            <a href="/mision/">Mision</a>
-            <a href="/vision/">Vision</a>
-            <a href="/metodologia/">Metodología</a>
-            <a href="/requisitos/">Requisitos</a>
-            <a href="/instrucciones/">Instructivo</a>
-        </div>
-        <div class="content">
-            <h2>Recursos</h2>
-            <a href="https://en.wikipedia.org/wiki/Maturity_model" target="_blank">Maturity Model</a>
-            <a href="https://www.youtube.com/watch?v=SB-qEYVdvXA" target="_blank">Cute Kittens</a>
-        </div>
+    </div>
 
-    </body>
-</html>
-
-
+</body>
+{% endblock %}

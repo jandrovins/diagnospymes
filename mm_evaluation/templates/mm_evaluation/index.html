@@ -1,21 +1,20 @@
 {% extends 'mm_evaluation/base.html' %}
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
 {% block content %}
-<title>DiagnosPYMES</title>
+{% block title %}<title>DiagnosPYMES</title>{% endblock %}
 <body style="background-color:honeydew;">
-
-    <div class="sidenav">
-        <a href="{% url 'mm_evaluation:index' %}">Inicio</a>
-        <a href="{% url 'mm_evaluation:login' %}">Login</a>
-        <a href="{% url 'mm_evaluation:registration' %}">Registro</a>
-        <a href="{% url 'mm_evaluation:begin_or_continue_autoevaluation' %}">Diagnosticar</a>
-        <a href="{% url 'mm_evaluation:results' %}">Resultados</a>
-        <a href="{% url 'mm_evaluation:logout' %}">Logout</a>
-    </div>
     <div class="main">
         <h1>DiagnosPYMES</h1>
     </div>
     <div class="topnav">
         <a href="{% url 'mm_evaluation:index' %}">¿Quienes somos?</a>
+        <a href="{% url 'mm_evaluation:mission' %}">Mision</a>
+        <a href="{% url 'mm_evaluation:vision' %}">Vision</a>
+        <a href="{% url 'mm_evaluation:methodology' %}">Metodología</a>
+        <a href="{% url 'mm_evaluation:requirements' %}">Requisitos</a>
+        <a href="{% url 'mm_evaluation:instructions' %}">Instructivo</a>
     </div>
     <div class="content">
         <h2>{{ title }}</h2>
