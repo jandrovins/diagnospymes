@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 
 from .models import Answer, Autoevaluation, Process, PYME
 
+
 def is_autoevaluation_filled(a):
     """Determines whether an autoevaluation is filled or not.
     
@@ -19,6 +20,7 @@ def is_autoevaluation_filled(a):
         return True
     return False
 
+
 def get_autoevaluation(pyme):
     """Returns the last autoevaluation not completed for a given PYME, or a new one.
 
@@ -34,15 +36,19 @@ def get_autoevaluation(pyme):
     """
 
     # PYME's object autoevaluations, ordered increasingly by start time
-    autoevaluations_list = Autoevaluation.objects.filter(pyme=pyme).order_by('start_time')
+    autoevaluations_list = Autoevaluation.objects.filter(pyme=pyme).order_by(
+        "start_time"
+    )
     for autoevaluation in autoevaluations_list:
         if not is_autoevaluation_filled(autoevaluation):
             return autoevaluation
     # If all existing autoevaluations are completed, create a new one and return it
-    return Autoevaluation(pyme=get_object_or_404(PYME, pk=pyme),
-            start_time=timezone.now(),
-            last_time_edition=timezone.now()
-            )
+    return Autoevaluation(
+        pyme=get_object_or_404(PYME, pk=pyme),
+        start_time=timezone.now(),
+        last_time_edition=timezone.now(),
+    )
+
 
 def get_last_full_autoevaluation(pyme):
     """Returns the last full autoevaluation.
@@ -57,7 +63,9 @@ def get_last_full_autoevaluation(pyme):
 
     """
     # PYME's object autoevaluations, order increasingly by start time
-    autoevaluation_list = Autoevaluation.objects.filter(pyme=pyme).order_by('start_time')
+    autoevaluation_list = Autoevaluation.objects.filter(pyme=pyme).order_by(
+        "start_time"
+    )
     full_autoevaluation = None
     for autoevaluation in autoevaluation_list:
         if is_autoevaluation_filled(autoevaluation):
@@ -75,6 +83,6 @@ def get_lowest_macroprocess_number(macroprocesses_scores, lowest_score):
         lowest_scores: the lowest score of macroprocess in the autoevaluation
     
     """
-    for macroprocess_num, score in macroprocesses_scores.items(): 
-        if lowest_score == score: 
+    for macroprocess_num, score in macroprocesses_scores.items():
+        if lowest_score == score:
             return macroprocess_num

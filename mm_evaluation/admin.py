@@ -2,7 +2,18 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
-from .models import Answer, Archive, Autoevaluation, FinancesInformation, GeneralPractice, Macroprocess, Process, PYME, Sector, SpecificPractice
+from .models import (
+    Answer,
+    Archive,
+    Autoevaluation,
+    FinancesInformation,
+    GeneralPractice,
+    Macroprocess,
+    Process,
+    PYME,
+    Sector,
+    SpecificPractice,
+)
 
 # Edit the following models in admin page
 admin.site.register(Macroprocess)
@@ -17,11 +28,13 @@ admin.site.register(Answer)
 class PYMEInline(admin.StackedInline):
     model = PYME
     can_delete = False
-    verbose_name_plural = 'PYME'
+    verbose_name_plural = "PYME"
+
 
 # Define a new User admin
 class UserAdmin(BaseUserAdmin):
     inlines = (PYMEInline,)
+
 
 # Re-register UserAdmin
 admin.site.unregister(User)
