@@ -34,7 +34,7 @@ urlpatterns = [
         path('registro_exitoso/', views.SuccessfulRegistrationView.as_view(), name='successful_registration'),
         path('acceso_denegado/', views.AccessDeniedView.as_view(), name='denied_access'),
         path('login/', auth_views.LoginView.as_view(), name="login"),
-        path('logout/', auth_views.logout_then_login, name="logout"),
+        path('logout/', auth_views.LogoutView.as_view(), name="logout"),
         path('cambiar_contraseña/', auth_views.PasswordChangeView.as_view(
             success_url=reverse_lazy('mm_evaluation:password_change_done')
             ),
