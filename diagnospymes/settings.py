@@ -140,7 +140,7 @@ BOOTSTRAP4 = {
     # Note that a URL can be either a string,
     # e.g. "https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css",
     # or a dict like the default value below.
-    "css_url": "https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css",
+    "css_url": "/static/mm_evaluation/css/diagnospymes.css ",
 
     # The complete URL to the Bootstrap JavaScript file
     "javascript_url": {
@@ -150,7 +150,7 @@ BOOTSTRAP4 = {
     },
 
     # The complete URL to the Bootstrap CSS file (None means no theme)
-    "theme_url": None,
+    "theme_url": "/static/mm_evaluation/css/bootstrap-slider.css",
 
     # The URL to the jQuery JavaScript file (full)
     "jquery_url": {
