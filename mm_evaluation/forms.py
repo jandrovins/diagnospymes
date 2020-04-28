@@ -37,17 +37,17 @@ class PYMERegistrationForm(forms.ModelForm):
         # Specify labels for each field
         labels = {
             'name': _('Nombre de la empresa'),
-            'sector': _('Nombre del sector económico al cual pertenece la empresa'),
+            'sector': _('Sector'),
             'nit': _('NIT de la empresa'),
             'address': _('Dirección de la empresa'),
-            'phone_number': _('Número telefónico de la empresa'),
-            'contact_sex': _('Sexo del contacto de la empresa'),
-            'contact_phone_number': _('Número telefónico del contacto de la empresa'),
-            'Contact_birth_date': _('Fecha de nacimiento del contacto de la empresa'),
-            'contact_id_type': _('Tipo del documento del contacto de la empresa'),
-            'contact_id_number': _('Número del documento del contacto de la empresa'),
-            'contact_time_on_charge': _('Tiempo que lleva a cargo el contacto de la empresa'),
-            'contact_education_level': _('Nivel de educación del contacto de la empresa'),
+            'phone_number': _('Teléfono'),
+            'contact_sex': _('Sexo'),
+            'contact_phone_number': _('Número telefónico o celular'),
+            'contact_birth_date': _('Fecha de nacimiento'),
+            'contact_id_type': _('Tipo del documento'),
+            'contact_id_number': _('Número del documento'),
+            'contact_time_on_charge': _('Tiempo que lleva a cargo'),
+            'contact_education_level': _('Nivel de educación'),
             'terms_conditions_acceptance': _('Aceptación de Términos y Condiciones'),
         }
 
@@ -94,7 +94,7 @@ class UserRegistrationForm(UserCreationForm):
         # Specify labels for each field
         labels = {
             'username': _('Nombre de usuario'),
-            'email': _('Ingrese el correo electrónico del contacto de la empresa'),
-            'first_name': _('Nombres del contacto de la empresa'),
-            'last_name': _('Apellidos del contacto de la empresa'),
+            'email': _('Correo electrónico'),
+            'first_name': _('Nombres'),
+            'last_name': _('Apellidos'),
         }
