@@ -1,17 +1,40 @@
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=devicewidth, initial-scale=1, shrink-to-fit=no">
+  <title> Detalle </title>
+
+  {% load bootstrap4 %}
+  {% bootstrap_css %}
+</head>
+
 <body style="background-color:honeydew;">
-   <style>
-     p {
-	 font-size: 150%;
-	 font-family: fantasy;
-	 color: blue;
-      }      
-   </style>
-   <h1>{{autoevaluation.last_time_edition}}</h1>
-   <h2>Final score: {{autoevaluation.final_score}}</h2>
+   <div class="container-fluid">
+   <h1 class="bg-info">Autoevaluación del {{autoevaluation.last_time_edition}}</h1>
+   <h4>Puntaje final: {{autoevaluation.final_score}}</h4>
+   </div>
 </body>
 
 {% if graph %}
-<div style="width:600;height:500">
+<div class="container-fluid" style="width:600;height:500">
   {{ graph|safe }}
 </div>
+<body>
+  <p>   </p>
+</body>
 {% endif %}
+
+<body style="background-color:honeydew;">
+  <div class = "container-fluid">
+    <h1 class = "bg-info">Recomendaciones</h1>
+    <h4>Su empresa se encuentra en nivel de madurez {{maturity_level.name}}</h4>
+    <p>Su macroproceso mas debil es {{ lowest_macroprocess.name }}</p>
+    <p>Para llegar al siguiente nivel deberias poder describirte así: {{ general_recommendation.description }}</p>
+    <ul>
+      {% if all_macroprocesses %}
+        {% for macroprocess in all_macroprocesses %}
+           <a href="{% url 'mm_evaluation:specific_recommendations' current_autoev.id macroprocess.id %}" class="btn btn-success bt-lg active btn-group-justified" role="button">{{ macroprocess.name }}</a>
+        {% endfor %}
+      {% endif %}
+  </div>
+</body>
+

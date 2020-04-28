@@ -1,14 +1,30 @@
 <head>
-    {% block title %}
-    <title>Resultados</title>{% endblock%}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+ 
+    <title>Resultados anteriores </title>
+    
+    {# Cargamos la librería #}
+    {% load bootstrap4 %}
+    
+    {# CSS Bootstrap #}
+   {% bootstrap_css %} 
 </head>
+
 <body style="background-color:honeydew;">
-    <h1>Resultados</h1>
-    <ul>
-        {% if all_previous_results %}
-        {% for autoevaluation in all_previous_results %}
-            <li> <a href="{% url 'mm_evaluation:autoevaluation_result' autoevaluation.id %}">{{ autoevaluation.last_time_edition }}</a></li>
-        {% endfor %}
-        {% endif %}
-    </ul>
+  <div class = "container-fluid">
+  <h1 class = "bg-info text-dark">Resultados</h1>
+  <ul>
+    {% if all_previous_results %}
+      {% for autoevaluation in all_previous_results %}
+        <a href="{% url 'mm_evaluation:autoevaluation_result' autoevaluation.id %}" class="btn btn-success btn-lg active btn-group-justified" role="button" aria-pressed="true">{{ autoevaluation.last_time_edition }}</a>
+      {% endfor %}
+    {% endif %}
+  </ul>
+  </div>
 </body>
+
+

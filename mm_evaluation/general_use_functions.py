@@ -64,3 +64,17 @@ def get_last_full_autoevaluation(pyme):
             full_autoevaluation = autoevaluation
     return full_autoevaluation
 
+
+def get_lowest_macroprocess_number(macroprocesses_scores, lowest_score):
+    """Returns a macroprocess number
+
+    This function go over a dictionary of macroprocesses scores and found the value that matches the lowest score value in the dictionary
+
+    Args:
+        macroprocesses_scores: dictionary with macroprocesses numbers and scores (macroprocess_number, score)
+        lowest_scores: the lowest score of macroprocess in the autoevaluation
+    
+    """
+    for macroprocess_num, score in macroprocesses_scores.items(): 
+        if lowest_score == score: 
+            return macroprocess_num

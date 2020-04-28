@@ -1,0 +1,31 @@
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=devicewidth, initial-scale=1, shrink-to-fit=no">
+  <title> Recomendaciones </title>
+  {% load bootstrap4 %}
+  {% bootstrap_css %}
+</head>
+
+<body style="background-color:honeydew;">
+  <div class="container-fluid">
+    <h1 class="bg-info">{{ current_macroprocess.name }}</h1>
+    {% if graph %}
+    <div class="container-fluid" style="width:600;height:500">
+      {{ graph|safe }}
+    </div>
+    <body>
+      <p>   </p>
+    </body>
+    {% endif %}
+    
+    {% if specific_recommendations %}
+    {% for recommendation in specific_recommendations %}
+    <ul class="list-group">
+      <li class="list-group-item">Para llegar al siguiente nivel deberias poder describirte así: {{ recommendation.description }}</li>
+    </ul>
+    {% endfor %}
+    {% endif %}
+  </div>
+</body>
+
+	

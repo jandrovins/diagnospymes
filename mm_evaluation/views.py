@@ -16,7 +16,7 @@ import plotly.offline as opy
 
 from .forms import  PYMERegistrationForm,UserRegistrationForm
 from .general_use_functions import *
-from .models import Answer, Autoevaluation, Macroprocess, Process,  PYME
+from .models import Answer, Autoevaluation, Macroprocess, Process,  PYME, GeneralPractice, SpecificPractice
 
 
 
@@ -124,6 +124,7 @@ class AutoevaluationView(LoginRequiredMixin, ListView):
         else:
             return HttpResponseRedirect(reverse_lazy('mm_evaluation:autoevaluation', args=(autoevaluation.id,))+'?page='+str(answer.process.macroprocess.number))
 
+
 class IndexView(View):
     template_name = 'mm_evaluation/index.html'
     context_object_name = 'general_list'
@@ -180,10 +181,13 @@ class PreviousResults(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         self.pyme = get_object_or_404(PYME, user=self.request.user)
-        return Autoevaluation.objects.filter(pyme=self.pyme).order_by('last_time_edition')
+        return Autoevaluation.objects.filter(pyme_id=self.pyme).order_by('last_time_edition')
 
       
 class ResultDetail(LoginRequiredMixin, DetailView):
+    """This class is for the detail of autoevaluation ressult view.
+    This view inherits from LoginRequiredMixin and DetailView.
+    Shows a graph of the result of every macroprocess in the autoevaluation, also have a query of every macroprocess objec available and a query of the object of GeneralPractice to show the maturity level of the PYME an send it to the template by using context"""
     # For use in LoginRequiredMixin
     login_url = reverse_lazy('mm_evaluation:login')
     permission_denied_message = "Debes ingresar a tu cuenta para acceder a esta sección."
@@ -193,12 +197,22 @@ class ResultDetail(LoginRequiredMixin, DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         self.autoevaluation = super().get_object()
+        context['current_autoev'] = self.autoevaluation
      
-        x = ['MP1', 'MP2', 'MP3', 'MP4', 'MP5', 'MP6', 'MP7', 'MP8', 'MP9', 'MP10']
+        x = []
         y = []
-
+        x.append(Macroprocess.objects.get(number=1).name)
+        x.append(Macroprocess.objects.get(number=2).name)
+        x.append(Macroprocess.objects.get(number=3).name)
+        x.append(Macroprocess.objects.get(number=4).name)
+        x.append(Macroprocess.objects.get(number=5).name)
+        x.append(Macroprocess.objects.get(number=6).name)
+        x.append(Macroprocess.objects.get(number=7).name)
+        x.append(Macroprocess.objects.get(number=8).name)
+        x.append(Macroprocess.objects.get(number=9).name)
+        x.append(Macroprocess.objects.get(number=10).name)
+        
         y.append(self.autoevaluation.macroprocess_1_score)
         y.append(self.autoevaluation.macroprocess_2_score)
         y.append(self.autoevaluation.macroprocess_3_score)
@@ -216,6 +230,38 @@ class ResultDetail(LoginRequiredMixin, DetailView):
         figure=go.Figure(data=data,layout=layout)
         div = opy.plot(figure, auto_open=False, output_type='div')
         context['graph'] = div
+        
+        all_macroprocesses = Macroprocess.objects.all()
+        context['all_macroprocesses'] = all_macroprocesses
+        macroprocesses_scores = {}
+        #Macroprocesses dictionary initialization
+        macroprocesses_scores[1]=self.autoevaluation.macroprocess_1_score
+        macroprocesses_scores[2]=self.autoevaluation.macroprocess_2_score
+        macroprocesses_scores[3]=self.autoevaluation.macroprocess_3_score
+        macroprocesses_scores[4]=self.autoevaluation.macroprocess_4_score
+        macroprocesses_scores[5]=self.autoevaluation.macroprocess_5_score
+        macroprocesses_scores[6]=self.autoevaluation.macroprocess_6_score
+        macroprocesses_scores[7]=self.autoevaluation.macroprocess_7_score
+        macroprocesses_scores[8]=self.autoevaluation.macroprocess_8_score
+        macroprocesses_scores[9]=self.autoevaluation.macroprocess_9_score
+        macroprocesses_scores[10]=self.autoevaluation.macroprocess_10_score
+        #lowest macroprocess score
+        lowest_score = min(list(macroprocesses_scores.values()))
+        #The key of the lowest score in macroprocesses dictionary
+        lowest_macroprocess_number = int(get_lowest_macroprocess_number(macroprocesses_scores, lowest_score))
+        #Macroprocess object 
+        lowest_macroprocess = Macroprocess.objects.get(number=lowest_macroprocess_number) #este no trae el objeto
+        context['lowest_macroprocess'] = lowest_macroprocess
+        #General practice object
+        maturity_level = GeneralPractice.objects.get(score=lowest_score)
+        context['maturity_level']=maturity_level
+
+        if (lowest_score<5):
+            lowest_score += 1
+            general_recommendation = GeneralPractice.objects.get(score=lowest_score)
+            context['general_recommendation']= general_recommendation
+        else:
+            context['general_recommendation']= "¡Sigue así!"
 
         return context
 
@@ -224,6 +270,175 @@ class ResultDetail(LoginRequiredMixin, DetailView):
         if not request.user.pyme == self.autoevaluation.pyme:
             return redirect(reverse('mm_evaluation:denied_access'))
         return response_class
+
+
+class SpecificRecommendationsDetail(DetailView):
+    """This class is for specific recommendations detail view.
+    This view inherits from DetailView. 
+    Shows the next level of every SpecificPractice of every macroprocess to use as a recommendation
+    """
+    # For use in LoginRequiredMixin
+    login_url = reverse_lazy('mm_evaluation:login')
+    permission_denied_message = "Debes ingresar a tu cuenta para acceder a esta sección."
+    
+    template_name = 'mm_evaluation/specificrecommendation.html'
+    model = Autoevaluation
+
+    def get(self, request, pk, ev_pk, *args, **kwargs):
+        """This a function get
+        It gets every process for each macroprocess. 
+        Acording to the autoevaluation results and the macroprocess selected sends the recommendations of each process to the template.
+        Also makes a graph with every process in the selected macroprocess and their respective score.
+        Args:
+            pk: current macroprocess number
+            ev_pk: current autoevalution id
+        """
+        self.macroprocess = get_object_or_404(Macroprocess, pk=pk)
+        self.autoevaluation = get_object_or_404(Macroprocess, pk=ev_pk)
+        current_macroprocess = self.macroprocess
+        current_autoevaluation = self.autoevaluation
+        specific_recommendations_list = []
+        x = []
+        y = []
+
+        macroprocess_1 = Macroprocess.objects.get(number=1)
+        processes_of_macroprocess_1 = Process.objects.filter(macroprocess_id=macroprocess_1.id)
+        macroprocess_2 = Macroprocess.objects.get(number=2)
+        processes_of_macroprocess_2 = Process.objects.filter(macroprocess_id=macroprocess_2.id)
+        macroprocess_3 = Macroprocess.objects.get(number=3)
+        processes_of_macroprocess_3 = Process.objects.filter(macroprocess_id=macroprocess_3.id)
+        macroprocess_4 = Macroprocess.objects.get(number=4)
+        processes_of_macroprocess_4 = Process.objects.filter(macroprocess_id=macroprocess_4.id)
+        macroprocess_5 = Macroprocess.objects.get(number=5)
+        processes_of_macroprocess_5 = Process.objects.filter(macroprocess_id=macroprocess_5.id)
+        macroprocess_6 = Macroprocess.objects.get(number=6)
+        processes_of_macroprocess_6 = Process.objects.filter(macroprocess_id=macroprocess_6.id)
+        macroprocess_7 = Macroprocess.objects.get(number=7)
+        processes_of_macroprocess_7 = Process.objects.filter(macroprocess_id=macroprocess_7.id)
+        macroprocess_8 = Macroprocess.objects.get(number=8)
+        processes_of_macroprocess_8 = Process.objects.filter(macroprocess_id=macroprocess_8.id)
+        macroprocess_9 = Macroprocess.objects.get(number=9)
+        processes_of_macroprocess_9 = Process.objects.filter(macroprocess_id=macroprocess_9.id)
+        macroprocess_10 = Macroprocess.objects.get(number=10)
+        processes_of_macroprocess_10 = Process.objects.filter(macroprocess_id=macroprocess_10.id)
+
+        if(current_macroprocess.id == macroprocess_1.id):
+            for process in processes_of_macroprocess_1:
+                answer = Answer.objects.get(process_id=process.id, autoevaluation_id=current_autoevaluation.id)
+                answer_score = answer.score
+                x.append(process.name)
+                y.append(answer_score)
+                if (answer_score<5):
+                    answer_score += 1
+                    specific_recommendation = GeneralPractice.objects.get(score=answer_score)
+                    specific_recommendations_list.append(specific_recommendation)
+            
+        elif(current_macroprocess.id == macroprocess_2.id):
+            for process in processes_of_macroprocess_2:
+                answer = Answer.objects.get(process_id=process.id, autoevaluation_id=current_autoevaluation.id)
+                answer_score = answer.score
+                x.append(process.name)
+                y.append(answer_score)
+                if (answer_score<5):
+                    answer_score += 1
+                    specific_recommendation = GeneralPractice.objects.get(score=answer_score)
+                    specific_recommendations_list.append(specific_recommendation)
+
+        elif(current_macroprocess.id == macroprocess_3.id):
+            for process in processes_of_macroprocess_3:
+                answer = Answer.objects.get(process_id=process.id, autoevaluation_id=current_autoevaluation.id)
+                answer_score = answer.score
+                x.append(process.name)
+                y.append(answer_score)
+                if (answer_score<5):
+                    answer_score += 1
+                    specific_recommendation = GeneralPractice.objects.get(score=answer_score)
+                    specific_recommendations_list.append(specific_recommendation)
+
+        elif(current_macroprocess.id == macroprocess_4.id):
+            for process in processes_of_macroprocess_4:
+                answer = Answer.objects.get(process_id=process.id, autoevaluation_id=current_autoevaluation.id)
+                answer_score = answer.score
+                x.append(process.name)
+                y.append(answer_score)
+                if (answer_score<5):
+                    answer_score += 1
+                    specific_recommendation = GeneralPractice.objects.get(score=answer_score)
+                    specific_recommendations_list.append(specific_recommendation)
+
+        elif(current_macroprocess.id == macroprocess_5.id):
+            for process in processes_of_macroprocess_5:
+                answer = Answer.objects.get(process_id=process.id, autoevaluation_id=current_autoevaluation.id)
+                answer_score = answer.score
+                x.append(process.name)
+                y.append(answer_score)
+                if (answer_score<5):
+                    answer_score += 1
+                    specific_recommendation = GeneralPractice.objects.get(score=answer_score)
+                    specific_recommendations_list.append(specific_recommendation)
+
+        elif(current_macroprocess.id == macroprocess_6.id):
+            for process in processes_of_macroprocess_6:
+                answer = Answer.objects.get(process_id=process.id, autoevaluation_id=current_autoevaluation.id)
+                answer_score = answer.score
+                x.append(process.name)
+                y.append(answer_score)
+                if (answer_score<5):
+                    answer_score += 1
+                    specific_recommendation = GeneralPractice.objects.get(score=answer_score)
+                    specific_recommendations_list.append(specific_recommendation)
+
+        elif(current_macroprocess.id == macroprocess_7.id):
+            for process in processes_of_macroprocess_7:
+                answer = Answer.objects.get(process_id=process.id, autoevaluation_id=current_autoevaluation.id)
+                answer_score = answer.score
+                x.append(process.name)
+                y.append(answer_score)
+                if (answer_score<5):
+                    answer_score += 1
+                    specific_recommendation = GeneralPractice.objects.get(score=answer_score)
+                    specific_recommendations_list.append(specific_recommendation)
+
+        elif(current_macroprocess.id == macroprocess_8.id):
+            for process in processes_of_macroprocess_8:
+                answer = Answer.objects.get(process_id=process.id, autoevaluation_id=current_autoevaluation.id)
+                answer_score = answer.score
+                x.append(process.name)
+                y.append(answer_score)
+                if (answer_score<5):
+                    answer_score += 1
+                    specific_recommendation = GeneralPractice.objects.get(score=answer_score)
+                    specific_recommendations_list.append(specific_recommendation)
+
+        elif(current_macroprocess.id == macroprocess_9.id):
+            for process in processes_of_macroprocess_9:
+                answer = Answer.objects.get(process_id=process.id, autoevaluation_id=current_autoevaluation.id)
+                answer_score = answer.score
+                x.append(process.name)
+                y.append(answer_score)
+                if (answer_score<5):
+                    answer_score += 1
+                    specific_recommendation = GeneralPractice.objects.get(score=answer_score)
+                    specific_recommendations_list.append(specific_recommendation)
+
+        elif(current_macroprocess.id == macroprocess_10.id):
+            for process in processes_of_macroprocess_10:
+                answer = Answer.objects.get(process_id=process.id, autoevaluation_id=current_autoevaluation.id)
+                answer_score = answer.score
+                x.append(process.name)
+                y.append(answer_score)
+                if (answer_score<5):
+                    answer_score += 1
+                    specific_recommendation = GeneralPractice.objects.get(score=answer_score)
+                    specific_recommendations_list.append(specific_recommendation)
+
+        data = [go.Bar(x=x, y=y)]
+        layout=go.Layout(title="Puntaje", xaxis={'title':'Macroproceso'}, yaxis={'title':'Resultado'})
+        figure=go.Figure(data=data,layout=layout)
+        div = opy.plot(figure, auto_open=False, output_type='div')
+        
+        return render(request, 'mm_evaluation/specificrecommendation.html',{'specific_recommendations':specific_recommendations_list , 'current_macroprocess':current_macroprocess, 'graph': div})        
+
 
 class Resources(View):
     template_name = 'mm_evaluation/resources.html'
@@ -284,6 +499,7 @@ def registration(request):
         'PYME_registration_form': PYME_form,
         })
 
+
 class AccessDeniedView(TemplateView):
     """View used when a user is accessing a page that does not belong to him.
 
@@ -293,3 +509,4 @@ class AccessDeniedView(TemplateView):
 
     """
     template_name = "mm_evaluation/denied_access.html"
+
