@@ -106,6 +106,10 @@
         {# Display django.contrib.messages as Bootstrap alerts #}
         {% bootstrap_messages %}
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            .slider.slider-horizontal .tooltip.tooltip-main.in,
+            .slider.slider-vertical .tooltip.tooltip-main.in { opacity: 1 !important; }
+        </style>
     </head>
 
     <body style="background-color:honeydew;">

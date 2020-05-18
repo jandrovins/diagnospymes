@@ -28,38 +28,49 @@
                         {{ process.guiding_question }}<br><br><br><br>
                     </div>
                     <div class="col-5">
-                        {% bootstrap_label "Puntuación por nivel de madurez:" label_for="slider_{{ process.id }}" %}
+                            <div id = "test" style="color:#ff2a00; margin-top: 2px; margin-left: -17px;  position: absolute;">
+                                <span title="{{ process.sorted_specificpractices.0.description }}">
+                                    {% fa5_icon 'frown' size='fa-2x' %}
+                                </span>
+                            </div>
+                            <div id = "test" style="color:#d13111; margin-top: 2px; margin-left: 26;  position: absolute;">
+                                <span title="{{ process.sorted_specificpractices.1.description }}">
+                                    {% fa5_icon 'frown-open' size='fa-2x' %}
+                                </span>
+                            </div>
+                            <div id = "test" style="color:#e37d09; margin-top: 2px; margin-left: 68px;  position: absolute;">
+                                <span title="{{ process.sorted_specificpractices.2.description }}">
+                                    {% fa5_icon 'meh' size='fa-2x' %}
+                                </span>
+                            </div>
+                            <div id = "test" style="color:#bec400; margin-top: 2px; margin-left: 110px;  position: absolute;">
+                                <span title="{{ process.sorted_specificpractices.3.description }}">
+                                    {% fa5_icon 'meh-rolling-eyes' size='fa-2x' %}
+                                </span>
+                            </div>
+                            <div id = "test" style="color:#0e6100; margin-top: 2px; margin-left: 151px;  position: absolute;">
+                                <span title="{{ process.sorted_specificpractices.4.description }}">
+                                    {% fa5_icon 'smile-beam' size='fa-2x' %}
+                                </span>
+                            </div>
+                            <div id = "test" style="color:#1ab000; margin-top: 2px; margin-left: 194px;  position: relative;">
+                                <span title="{{ process.sorted_specificpractices.5.description }}">
+                                    {% fa5_icon 'laugh-beam' size='fa-2x'%}
+                                </span>
+                            </div>
                         <input
                             type="text"
                             id="slider_{{ process.id }}"
                             name="score_{{ process.id }}"
                             data-provide="slider"
                             data-slider-ticks="[0, 1, 2, 3, 4, 5]"
-                            data-slider-ticks-tooltip="true"
+                            data-slider-ticks-labels='["0", "1", "2", "3", "4", "5"]'
                             data-slider-min="0"
                             data-slider-max="5"
                             data-slider-step="1"
                             data-slider-value="2"
-                            data-slider-tooltip="show"
+                            data-slider-tooltip="hide"
                             >
-                            <div id = "test" style="color:#ff2a00; margin-top: 2px; margin-left: -17px;  position: absolute;">
-                                {% fa5_icon 'frown' size='fa-2x' %}
-                            </div>
-                        <div id = "test" style="color:#d13111; margin-top: 2px; margin-left: 26;  position: absolute;">
-                            {% fa5_icon 'frown-open' size='fa-2x' %}
-                        </div>
-                        <div id = "test" style="color:#e37d09; margin-top: 2px; margin-left: 68px;  position: absolute;">
-                            {% fa5_icon 'meh' size='fa-2x' %}
-                        </div>
-                        <div id = "test" style="color:#bec400; margin-top: 2px; margin-left: 110px;  position: absolute;">
-                            {% fa5_icon 'meh-rolling-eyes' size='fa-2x' %}
-                        </div>
-                        <div id = "test" style="color:#0e6100; margin-top: 2px; margin-left: 151px;  position: absolute;">
-                            {% fa5_icon 'smile-beam' size='fa-2x' %}
-                        </div>
-                        <div id = "test" style="color:#1ab000; margin-top: 2px; margin-left: 194px;  position: relative;">
-                            {% fa5_icon 'laugh-beam' size='fa-2x'%}
-                        </div>
                     </div>
                     <div class="w-100"></div>
                     {% endfor %}
