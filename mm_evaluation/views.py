@@ -153,7 +153,7 @@ class AutoevaluationView(LoginRequiredMixin, ListView):
             return HttpResponseRedirect(
                 reverse_lazy("mm_evaluation:autoevaluation", args=(autoevaluation.id,))
                 + "?page="
-                + str(answer.process.macroprocess.number)
+                + str(answer.process.macroprocess.number + 1)
             )
 
 
