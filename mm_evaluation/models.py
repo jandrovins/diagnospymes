@@ -190,6 +190,10 @@ class Process(models.Model):
     guiding_question = models.CharField(max_length=400,default=' ')
     weight           = models.FloatField()
 
+    @property
+    def sorted_specificpractices(self):
+        return list(self.specificpractice_set.order_by('score'))
+
     def __str__(self):
         return self.name
 
@@ -244,7 +248,7 @@ class SpecificPractice(models.Model):
     recommendation = models.CharField(max_length = 400)
 
     def __str__(self):
-        return 'Specific practice for process {} on score {}'.format(self.process.name, self.process.score)
+        return 'Specific practice for process {} on score {}'.format(self.process.name, self.score)
 
     class Meta:
         db_table = 'specific_practice'
